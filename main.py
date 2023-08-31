@@ -416,6 +416,24 @@ def target_experiences(df):
     target_experiences_html = f'<mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color">{target_experiences_string_with_newline}</mark>'
     return target_experiences_html
 
+# ５ 置換処理
+def integrate_new_div(html_template, new_div, image_file, target_experiences_html):
+    soup = BeautifulSoup(html_template, 'html.parser')
+    
+    # 既存のdivを特定して置換
+    target_div = soup.find('div', {'style': 'flex-basis:66.66%'})
+    target_div.replace_with(new_div)
+    
+    # 既存のイラストを特定して置換
+    target_img = soup.find('img', {'class': 'wp-image-13148'})
+    target_img['src'] = image_file  # 仮定：image_fileは新しい画像のURL
+    
+    # 既存のmarkタグを特定して置換
+    target_mark = soup.find('mark', {'class': 'has-inline-color'})
+    target_mark.replace_with(BeautifulSoup(target_experiences_html, 'html.parser'))
+    
+    return str(soup)
+
 # ６-赤
 def get_experiences_lst(df):
     experiences_lst = df['10. 前問で答えた体験談のメリットを「一言」で言い表してください'].iloc[0:].tolist()
@@ -575,23 +593,22 @@ def process_all_rows(df, html_template):
         
         # イラストの置換
         image_file = target_block_illustration(df, index)
-        # ここでimage_fileを使ってHTML内のイラストを置換する処理を追加（例：target_div内）
-
+        
         # pタグの置換
         target_experiences_html = target_experiences(df)
-        # ここでtarget_experiences_htmlを使ってHTML内のpタグを置換する処理を追加（例：target_div内）
-
+        
         # html_templateにnew_divを統合する処理
-        html_template = integrate_new_div(html_template, new_div)  # この関数は新しいHTMLブロックをhtml_templateに統合する
+        html_template = integrate_new_div(html_template, new_div, image_file, target_experiences_html)
 
     return html_template  # 更新されたhtml_templateを返す
 
 
+
 # ６-青 h3
 def loop_and_replace_experiences(df, html_template):
-    """
+    '''
     データフレーム内の説明文をループし、それぞれのプレースホルダーを置き換えます
-    """
+    '''
     for index in range(len(df)):
         h3_html, p_html, image_file = experiences_oneword_lst(df, index)
         
@@ -760,6 +777,27 @@ def generate_html_content(file_path):
 
     return html_template
 
+# 新しい関数
+def on_generate_button_click():
+    file_path = file_entry.get()
+    specific_word = word_entry.get()
+    
+    if not file_path or file_path == 'ファイルを選択してください':
+        result_label.config(text="エラー: ファイルが選択されていません")
+        return
+    
+    if not specific_word:
+        result_label.config(text="エラー: 特定のワードが入力されていません")
+        return
+
+    try:
+        html_content = generate_html_content(file_path)
+        text_widget.delete("1.0", tk.END)
+        text_widget.insert(tk.END, html_content)
+    except Exception as e:
+        result_label.config(text=f"エラー: {e}")
+
+generate_button = ttk.Button(button_frame, text="HTML生成 スタート", command=on_generate_button_click)
 
 def copy_to_clipboard():
     text_widget.tag_add(tk.SEL, "1.0", tk.END)
@@ -774,30 +812,40 @@ root = tk.Tk()
 root.title("CSV Selector")
 root.geometry('600x400')
 
-# ボタンを配置（HTMLを生成して表示する）
-generate_button = ttk.Button(root, text="HTML生成 スタート", command=generate_html_content)
-generate_button.pack(pady=10)
+# グリッドで配置するフレーム
+grid_frame = tk.Frame(root)
+grid_frame.pack()
 
-copy_button = ttk.Button(root, text="HTML Copy", command=copy_to_clipboard)
-copy_button.pack()
 
 # 特定ワードの入力フィールド
-word_label = tk.Label(root, text='特定ワードを入力: ')
-word_label.pack()
-word_entry = tk.Entry(root)
-word_entry.insert(0, 'xxx') # デフォルト値として 'xxx'
-word_entry.pack()
+word_label = tk.Label(grid_frame, text='特定ワードを入力: ')
+word_label.grid(row=0, column=0)
+word_entry = tk.Entry(grid_frame)
+word_entry.insert(0, 'xxx')  # デフォルト値として 'xxx'
+word_entry.grid(row=0, column=1)
 
 # ファイル選択エントリとボタン
-file_label = tk.Label(root, text='アンケート結果(CSV) ')
-file_label.pack()
-file_entry = tk.Entry(root)
+file_label = tk.Label(grid_frame, text='アンケート結果(CSV) ')
+file_label.grid(row=1, column=0)
+file_entry = tk.Entry(grid_frame)
 file_entry.insert(0, 'ファイルを選択してください')
-file_entry.pack()
-file_button = tk.Button(root, text='ファイル選択', command=browse_file)
-file_button.pack()
-read_button = tk.Button(root, text='CSV読み込み', command=generate_html_content) # 読み込みボタン
-read_button.pack()
+file_entry.grid(row=1, column=1)
+file_button = tk.Button(grid_frame, text='ファイル選択', command=browse_file)
+file_button.grid(row=1, column=2)
+
+# パックで配置するフレーム
+pack_frame = tk.Frame(root)
+pack_frame.pack()
+
+# ボタンを配置（HTMLを生成して表示する）
+button_frame = tk.Frame(pack_frame)  # 新しいフレームを作成してボタンをその中に配置
+button_frame.pack()
+
+generate_button = ttk.Button(button_frame, text="HTML生成 スタート", command=generate_html_content)
+generate_button.pack(side=tk.LEFT, padx=5, pady=10)  # side=tk.LEFTで左側に配置
+
+copy_button = ttk.Button(button_frame, text="HTML Copy", command=copy_to_clipboard)
+copy_button.pack(side=tk.LEFT, padx=5, pady=10)  # side=tk.LEFTで左側に配置
 
 # 結果を表示するラベル
 result_label = tk.Label(root, text="")
