@@ -1,6 +1,7 @@
 import os
 os.environ['TK_SILENCE_DEPRECATION'] = '1'
 import tkinter as tk
+from tkinter import ttk
 from tkinter import filedialog
 import pandas as pd
 import requests
@@ -12,7 +13,7 @@ from bs4 import BeautifulSoup
 def fetch_html_template(url, specific_word):
     response = requests.get(url)
     if response.status_code != 200:
-        return None
+        return "特定のサイトを読み込むことができませんでした。"
     html_template = response.text
     return html_template.replace('XXX', specific_word)
 
@@ -363,6 +364,58 @@ def demerit_lst(df):
     return demerits_html
 
 
+# ５
+#  指定されたHTML部分を特定する関数
+def find_target_block(html_template):
+    soup = BeautifulSoup(html_template, 'html.parser')
+    target_div = soup.find('div', {'style': 'flex-basis:66.66%'})
+    return target_div
+
+#  特定したHTML部分を置換する関数
+def replace_target_block(target_div, data_row):
+    # 満足度の部分を置換
+    target_div.find('p').find('span').string = data_row['4. 満足度を教えてください。']
+    
+    # 年齢と性別の部分を置換
+    target_div.find_all('p')[1].string = f"{data_row['3. 回答者様の年齢を教えて下さい']}・{data_row['2. 回答者様の性別を教えて下さい']}"
+    
+    # 期間の部分を置換
+    target_p = target_div.find('p')
+    current_text = target_p.decode_contents()  # HTMLの内容を取得
+    period = data_row['5. 使用・利用期間を教えてください']
+    new_text = f"期間：{period}<br>" + current_text.split('<br>')[1]
+    target_p.clear()  # 現在の内容を削除
+    target_p.append(new_text)  # 新しい内容を追加
+    
+    return target_div
+
+def target_block_illustration(df, index):
+    '''
+    性別でイラストを置換する処理
+    '''
+    gender_mapping = {
+        '1': '男性',
+        '2': '女性'
+        }
+    gender_value = df.loc[index, '2. 回答者様の性別を教えて下さい']
+    gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
+    if gender == '男性':
+        image_file = '口コミ男性アイコン.webp'
+    else:
+        image_file = '口コミ女性アイコン.webp'
+    return image_file
+
+# ５ pタグの１行目
+# 「。」で改行
+def target_experiences(df):
+    '''
+    pタグの置換する場所特定とﾌｫｰﾏｯﾄ設定
+    '''
+    target_experiences_string = df.loc[0, '7. 前問で答えた内容を「一言」で言い表してください']
+    target_experiences_string_with_newline = target_experiences_string.replace('。', '。\n')
+    target_experiences_html = f'<mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color">{target_experiences_string_with_newline}</mark>'
+    return target_experiences_html
+
 # ６-赤
 def get_experiences_lst(df):
     experiences_lst = df['10. 前問で答えた体験談のメリットを「一言」で言い表してください'].iloc[0:].tolist()
@@ -512,16 +565,43 @@ def IRDB_search(xxx):
 # ----------------------------------------------------------
 
 # ループ処理の関数
+# ５
+def process_all_rows(df, html_template):
+    for index, row in df.iterrows():
+        # 指定されたHTML部分を特定する関数処理
+        target_div = find_target_block(html_template)
+        # 特定したHTML部分を置換する関数処理
+        new_div = replace_target_block(target_div, row)
+        
+        # イラストの置換
+        image_file = target_block_illustration(df, index)
+        # ここでimage_fileを使ってHTML内のイラストを置換する処理を追加（例：target_div内）
 
+        # pタグの置換
+        target_experiences_html = target_experiences(df)
+        # ここでtarget_experiences_htmlを使ってHTML内のpタグを置換する処理を追加（例：target_div内）
+
+        # html_templateにnew_divを統合する処理
+        html_template = integrate_new_div(html_template, new_div)  # この関数は新しいHTMLブロックをhtml_templateに統合する
+
+    return html_template  # 更新されたhtml_templateを返す
+
+
+# ６-青 h3
 def loop_and_replace_experiences(df, html_template):
     """
-    Loop through the experiences in the dataframe and replace the respective placeholders.
+    データフレーム内の説明文をループし、それぞれのプレースホルダーを置き換えます
     """
     for index in range(len(df)):
         h3_html, p_html, image_file = experiences_oneword_lst(df, index)
+        
+        # 以降の処理
         new_img_tag = f'<img decoding="async" loading="lazy" src="{image_file}" alt="{df.loc[index, "gender"]}, {df.loc[index, "age_group"]}" class="c-balloon__iconImg" width="80px" height="80px">'
         html_template = replace_experiences(html_template, h3_html, p_html, new_img_tag)
     return html_template
+
+
+
 
 # ----------------------------------------------------------
 
@@ -541,7 +621,7 @@ def link_generator(ec_site, xxx):
 
     return functions[ec_site](xxx)
 
-
+# 置換処理実施
 def replace_placeholders(html_template, df):
     def replace_merit_list(merits):
         return '\n'.join([f'<li>{merit}</li>' for merit in merits])
@@ -575,6 +655,8 @@ def replace_placeholders(html_template, df):
         # ６-青 h3
         '<h3 class="wp-block-heading" id="kouka-1">簡単に綺麗を保てる</h3>': (replace_experiences, {'index': 0, 'type': 'h3'}),
         '<p>色々な商品を試しましたが…</p>': (replace_experiences, {'index': 0, 'type': 'p'}),
+
+
         '<img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px">': (replace_experiences, {'index': 0, 'type': 'img'}),
         
         # ７-赤
@@ -586,28 +668,7 @@ def replace_placeholders(html_template, df):
         # ８-赤
         '<p>XXXは安い、綺麗になる、健康的になるのが魅力です。【意味ナイン】では、XXXは意味ないのか、意味あるのか調査し、評判やコメント、おすすめ代替案について紹介しています。</p>':(get_merits2, {}),
 
-        # Amazon検索
-        'amazon_placeholder': (amazon_search, {'search_term': "xxx"}),
-
-        # 楽天
-        'rakuten_placeholder': (rakuten_search, {'search_term': "xxx"}),
-
-        # yahoo
-        'yahoo_placeholder': (yahoo_search, {'search_term': "xxx"}),
-
-        # google
-        'google_placeholder': (google_search, {'search_term': "xxx"}),
-
-        # cinii
-        'cinii_placeholder': (cinii_search, {'search_term': "xxx"}),
-
-        # jstage
-        'jstage_placeholder': (jstage_search, {'search_term': "xxx"}),
-
-        # IRDB
-        'IRDB_placeholder': (IRDB_search, {'search_term': "xxx"}),
-
-}
+    }
 
     
     for placeholder, (func, args) in placeholders_mapping.items():
@@ -630,19 +691,23 @@ def replace_placeholders(html_template, df):
         # 'args'の適切なキーの確認
         if 'post_process' in args and not callable(args['post_process']):
             raise ValueError(f"'post_process' in args is not callable.")
-            
-
+        
     return html_template
+
+# メイン関数の前にやらないとcsvﾌｧｲﾙを読み込めない
+def browse_file():
+    '''
+    GUIでcsvファイルを選択して置換するためのデータを読み込む 
+    '''
+    file_path = filedialog.askopenfilename(filetypes=[('CSVファイル', '*.csv')])
+    file_entry.delete(0, tk.END)
+    file_entry.insert(0, file_path)
+
+
 
 #----------------------------------------------------------
 
 # メイン関数*********************
-
-# 誤ったファイルかどうかを気付けるように
-def browse_file():
-    file_path = filedialog.askopenfilename(filetypes=[('CSVファイル', '*.csv')])
-    file_entry.delete(0, tk.END)
-    file_entry.insert(0, file_path)
 
 # csvファイルの読み込み
 def generate_html_content(file_path):
@@ -651,7 +716,8 @@ def generate_html_content(file_path):
 
     url = 'https://iminain.com/%e3%80%90%e5%a4%89%e6%95%b0ver%e3%80%91%e7%b4%a0%e6%b0%b4%e3%81%af%e6%84%8f%e5%91%b3%e3%81%aa%e3%81%84%ef%bc%9f%e6%84%8f%e5%91%b3%e3%81%82%e3%82%8b%ef%bc%9f%e8%a9%95%e5%88%a4%e3%81%a8%e3%81%8a/'
 
-    # fetch_html_templateでhtml_templateを初期化
+    # fetch_html_templateでhtml_templateを初期化 
+    # URLから取得したHTMLから変数「xxx」に代入されたもの一番最初の部分
     html_template = fetch_html_template(url, specific_word)
     if not html_template:
         return "URLからHTMLを取得できませんでした"
@@ -684,6 +750,7 @@ def generate_html_content(file_path):
 
 
     # メイン関数にループ処理を反映
+    html_template = process_all_rows(html_template)
     html_template = loop_and_replace_experiences(html_template)
 
     # 置換処理実施
@@ -694,10 +761,25 @@ def generate_html_content(file_path):
     return html_template
 
 
+def copy_to_clipboard():
+    text_widget.tag_add(tk.SEL, "1.0", tk.END)
+    selected_text = text_widget.get(tk.SEL_FIRST, tk.END)
+    text_widget.clipboard_clear()
+    text_widget.clipboard_append(selected_text)
+    text_widget.clipboard_own()
+    text_widget.tag_remove(tk.SEL, "1.0", tk.END)
+
 # Tkinterウィンドウを作成
 root = tk.Tk()
 root.title("CSV Selector")
 root.geometry('600x400')
+
+# ボタンを配置（HTMLを生成して表示する）
+generate_button = ttk.Button(root, text="HTML生成 スタート", command=generate_html_content)
+generate_button.pack(pady=10)
+
+copy_button = ttk.Button(root, text="HTML Copy", command=copy_to_clipboard)
+copy_button.pack()
 
 # 特定ワードの入力フィールド
 word_label = tk.Label(root, text='特定ワードを入力: ')
@@ -720,5 +802,17 @@ read_button.pack()
 # 結果を表示するラベル
 result_label = tk.Label(root, text="")
 result_label.pack()
+
+# テキストウィジェットとスクロールバーの設置
+text_widget = tk.Text(root, wrap=tk.NONE)
+text_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+scroll_y = ttk.Scrollbar(root, orient=tk.VERTICAL, command=text_widget.yview)
+scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
+
+scroll_x = ttk.Scrollbar(root, orient=tk.HORIZONTAL, command=text_widget.xview)
+scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
+
+text_widget.config(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
 
 root.mainloop()
