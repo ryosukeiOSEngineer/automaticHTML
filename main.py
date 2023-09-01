@@ -797,7 +797,7 @@ def on_generate_button_click():
     except Exception as e:
         result_label.config(text=f"エラー: {e}")
 
-generate_button = ttk.Button(button_frame, text="HTML生成 スタート", command=on_generate_button_click)
+
 
 def copy_to_clipboard():
     text_widget.tag_add(tk.SEL, "1.0", tk.END)
@@ -816,22 +816,25 @@ root.geometry('600x400')
 grid_frame = tk.Frame(root)
 grid_frame.pack()
 
+# 空のラベルを追加して高さ設定
+empty_label = tk.Label(grid_frame, height=2)  
+empty_label.grid(row=0, column=0, columnspan=3)
 
 # 特定ワードの入力フィールド
 word_label = tk.Label(grid_frame, text='特定ワードを入力: ')
-word_label.grid(row=0, column=0)
+word_label.grid(row=1, column=0)
 word_entry = tk.Entry(grid_frame)
-word_entry.insert(0, 'xxx')  # デフォルト値として 'xxx'
-word_entry.grid(row=0, column=1)
+word_entry.insert(0, 'xxx')
+word_entry.grid(row=1, column=1)
 
 # ファイル選択エントリとボタン
 file_label = tk.Label(grid_frame, text='アンケート結果(CSV) ')
-file_label.grid(row=1, column=0)
+file_label.grid(row=2, column=0)
 file_entry = tk.Entry(grid_frame)
 file_entry.insert(0, 'ファイルを選択してください')
-file_entry.grid(row=1, column=1)
+file_entry.grid(row=2, column=1)
 file_button = tk.Button(grid_frame, text='ファイル選択', command=browse_file)
-file_button.grid(row=1, column=2)
+file_button.grid(row=2, column=2)
 
 # パックで配置するフレーム
 pack_frame = tk.Frame(root)
@@ -841,11 +844,12 @@ pack_frame.pack()
 button_frame = tk.Frame(pack_frame)  # 新しいフレームを作成してボタンをその中に配置
 button_frame.pack()
 
-generate_button = ttk.Button(button_frame, text="HTML生成 スタート", command=generate_html_content)
-generate_button.pack(side=tk.LEFT, padx=5, pady=10)  # side=tk.LEFTで左側に配置
+generate_button = ttk.Button(button_frame, text="HTML生成 START", command=on_generate_button_click)
 
-copy_button = ttk.Button(button_frame, text="HTML Copy", command=copy_to_clipboard)
-copy_button.pack(side=tk.LEFT, padx=5, pady=10)  # side=tk.LEFTで左側に配置
+generate_button.pack(side=tk.LEFT, padx=15, pady=30)  # side=tk.LEFTで左側に配置
+
+copy_button = ttk.Button(button_frame, text="HTML COPY", command=copy_to_clipboard)
+copy_button.pack(side=tk.LEFT, padx=15, pady=30)  # side=tk.LEFTで左側に配置
 
 # 結果を表示するラベル
 result_label = tk.Label(root, text="")
@@ -853,7 +857,7 @@ result_label.pack()
 
 # テキストウィジェットとスクロールバーの設置
 text_widget = tk.Text(root, wrap=tk.NONE)
-text_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+# text_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 scroll_y = ttk.Scrollbar(root, orient=tk.VERTICAL, command=text_widget.yview)
 scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
