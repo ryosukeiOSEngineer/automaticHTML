@@ -143,7 +143,7 @@ def remove_6_blue_h3():
     return str(soup)
 
 
-# ６-青 クラスの2番目以降を削除
+# ６-青 'swell-block-balloon'クラスの2番目以降を削除
 def remove_6_to_blue_divs(html_content):
     """
     'swell-block-balloon'クラスを持つ<div>要素の中で、最初の要素以外をすべて削除する関数。
@@ -309,43 +309,6 @@ def one_word_comments_illustration(df, index):
     return image_file
 
 
-# タブループ生成
-def generate_tabs_from_csv(df, html_template):
-    # CSVの行数を取得
-    num_rows = len(df)
-    
-    # タブのヘッダー部分を生成
-    tab_headers = []
-    for i in range(num_rows):
-        description = get_one_word_description(df)
-        tab_headers.append(f'<li class="c-tabList__item" role="presentation"><button role="tab" class="c-tabList__button" aria-selected="false" aria-controls="tab-6deac381-{i}" data-onclick="tabControl">{description}</button></li>')
-    
-    # タブのヘッダー部分を結合
-    tabs_html = '<ul class="c-tabList" role="tablist">' + ''.join(tab_headers) + '</ul>'
-    
-    # タブの内容部分を生成
-    tab_contents = []
-    for i in range(num_rows):
-        content = replace_p_content(html_template, df.loc[i])
-        
-        # 画像のファイル名を取得
-        image_file = experiences_oneword_lst(df, i)
-        
-        # HTMLテンプレート内の画像部分を置換
-        content = content.replace('<img src="placeholder_image.webp">', f'<img src="{image_file}">')
-        
-        # コメント部分を追加
-        comment_content = one_word_comments(df)
-        content += comment_content
-        
-        tab_contents.append(content)
-    
-    # タブの内容部分を結合
-    tabs_html += ''.join(tab_contents)
-    
-    return tabs_html
-
-
 # ４-赤 Demerits
 def get_demerits(df):
     demerits_string = df['11. 水素水のデメリットを3つ教えてください'].iloc[0] # 上から一番目を表示
@@ -364,14 +327,14 @@ def demerit_lst(df):
     return demerits_html
 
 
-# ５
-#  指定されたHTML部分を特定する関数
+# ５ 指定されたHTML部分を特定する関数
 def find_target_block(html_template):
     soup = BeautifulSoup(html_template, 'html.parser')
     target_div = soup.find('div', {'style': 'flex-basis:66.66%'})
     return target_div
 
-#  特定したHTML部分を置換する関数
+
+# ５ 特定したHTML部分を置換する関数
 def replace_target_block(target_div, data_row):
     # 満足度の部分を置換
     target_div.find('p').find('span').string = data_row['4. 満足度を教えてください。']
@@ -389,6 +352,8 @@ def replace_target_block(target_div, data_row):
     
     return target_div
 
+
+# ５ 性別でイラストを置換する処理
 def target_block_illustration(df, index):
     '''
     性別でイラストを置換する処理
@@ -405,8 +370,8 @@ def target_block_illustration(df, index):
         image_file = '口コミ女性アイコン.webp'
     return image_file
 
-# ５ pタグの１行目
-# 「。」で改行
+
+# ５ pタグ  １行目「。」で改行
 def target_experiences(df):
     '''
     pタグの置換する場所特定とﾌｫｰﾏｯﾄ設定
@@ -415,6 +380,7 @@ def target_experiences(df):
     target_experiences_string_with_newline = target_experiences_string.replace('。', '。\n')
     target_experiences_html = f'<mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color">{target_experiences_string_with_newline}</mark>'
     return target_experiences_html
+
 
 # ５ 置換処理
 def integrate_new_div(html_template, new_div, image_file, target_experiences_html):
@@ -433,6 +399,7 @@ def integrate_new_div(html_template, new_div, image_file, target_experiences_htm
     target_mark.replace_with(BeautifulSoup(target_experiences_html, 'html.parser'))
     
     return str(soup)
+
 
 # ６-赤
 def get_experiences_lst(df):
@@ -580,10 +547,52 @@ def IRDB_search(xxx):
     return base_url
 
 
-# ----------------------------------------------------------
+# ３-1個目のタブ生成関数
+# タブを生成した後にループ処理を行うため、ここに記載
+def generate_tabs_from_csv(df, html_template):
+    # タブのヘッダー部分を生成
+    tab_headers = generate_tab_headers(df)
+    
+    # タブの内容部分を生成
+    tab_contents = generate_tab_contents(df, html_template)
+    
+    # タブのヘッダーと内容を結合
+    tabs_html = '<ul class="c-tabList" role="tablist">' + tab_headers + '</ul>' + tab_contents
+    
+    return tabs_html
 
+
+# ----------------------------------------------------------
 # ループ処理の関数
-# ５
+
+
+# ３ ループ処理
+# タブのヘッダー部分を生成をループ処理
+def generate_tab_headers(df):
+    num_rows = len(df)
+    tab_headers = []
+    for i in range(num_rows):
+        description = get_one_word_description(df)
+        tab_headers.append(f'<li class="c-tabList__item" role="presentation"><button role="tab" class="c-tabList__button" aria-selected="false" aria-controls="tab-6deac381-{i}" data-onclick="tabControl">{description}</button></li>')
+    return ''.join(tab_headers)
+
+
+# ３ ループ処理
+# タブの内容部分を生成するループ処理
+def generate_tab_contents(df, html_template):
+    num_rows = len(df)
+    tab_contents = []
+    for i in range(num_rows):
+        content = replace_p_content(html_template, df.loc[i])
+        image_file = experiences_oneword_lst(df, i)
+        content = content.replace('<img src="placeholder_image.webp">', f'<img src="{image_file}">')
+        comment_content = one_word_comments(df)
+        content += comment_content
+        tab_contents.append(content)
+    return ''.join(tab_contents)
+
+
+# ５ ループ処理
 def process_all_rows(df, html_template):
     for index, row in df.iterrows():
         # 指定されたHTML部分を特定する関数処理
@@ -616,8 +625,6 @@ def loop_and_replace_experiences(df, html_template):
         new_img_tag = f'<img decoding="async" loading="lazy" src="{image_file}" alt="{df.loc[index, "gender"]}, {df.loc[index, "age_group"]}" class="c-balloon__iconImg" width="80px" height="80px">'
         html_template = replace_experiences(html_template, h3_html, p_html, new_img_tag)
     return html_template
-
-
 
 
 # ----------------------------------------------------------
@@ -711,6 +718,10 @@ def replace_placeholders(html_template, df):
         
     return html_template
 
+
+
+
+
 # メイン関数の前にやらないとcsvﾌｧｲﾙを読み込めない
 def browse_file():
     '''
@@ -769,6 +780,12 @@ def generate_html_content(file_path):
     # メイン関数にループ処理を反映
     html_template = process_all_rows(html_template)
     html_template = loop_and_replace_experiences(html_template)
+
+    # タブのHTMLを生成
+    tabs_html = generate_tabs_from_csv(df, html_template)
+
+    # 生成したタブのHTMLをhtml_templateに追加（チェーン処理）
+    html_template += tabs_html
 
     # 置換処理実施
     html_template = replace_placeholders(html_template, df)
