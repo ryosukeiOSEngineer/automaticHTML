@@ -446,9 +446,11 @@ def get_6_comment(df, index):
 def get_6_text(df, index):
     content = df.loc[index, '9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい']
     sentences = content.split('。')
-    for sentence in sentences[1:]:
-    #     merits_html = f'<p>意味があるとされるおすすめポイントは{merits_formatted}などがあります。</p>' # 新しく置換するもの
-    # return merits_html
+    p2_html_list = []  # 置換する文を保存するリスト
+    for sentence in sentences[1:]:  # 最初の文をスキップ
+        p2_html_list.append(f'<p>{sentence}。</p><br>')  # 新しく置換するもの
+    p2_html = "".join(p2_html_list)  # リストを文字列に連結
+    return p2_html
 
 
 # ７-赤 recommend
@@ -598,17 +600,18 @@ def process_all_rows(df, html_template):
 
 
 # ６-青 h3 + ｲﾗｽﾄ + pﾀｸﾞ1行目 + pﾀｸﾞ2行目のﾙｰﾌﾟ
-def loop_and_replace_experiences(df, html_template):
-    '''
-    データフレーム内の説明文をループし、それぞれのプレースホルダーを置き換えます
-    '''
-    for index in range(len(df)):
-        h3_html, p_html, image_file = experiences_oneword_lst(df, index)
-        
-        # 以降の処理
-        new_img_tag = f'<img decoding="async" loading="lazy" src="{image_file}" alt="{df.loc[index, "gender"]}, {df.loc[index, "age_group"]}" class="c-balloon__iconImg" width="80px" height="80px">'
-        html_template = replace_experiences(html_template, h3_html, p_html, new_img_tag)
-    return html_template
+def generate_full_html(df, html_template):
+    full_html = ""
+    for index, row in df.iterrows():
+        h3_html = get_h3_html_from_df(df, index)
+        image_file = get_image_file_from_df(df, index)
+        comment = get_6_comment(df, index)
+        text = get_6_text(df, index)
+        full_html += f"{h3_html}\n{image_file}\n{comment}\n{text}\n"
+    
+    final_html = html_template.format(content=full_html)
+    return final_html
+
 
 
 # ----------------------------------------------------------
@@ -763,7 +766,7 @@ def generate_html_content(file_path):
 
     # メイン関数にループ処理を反映
     html_template = process_all_rows(html_template)
-    html_template = loop_and_replace_experiences(html_template)
+    html_template = generate_full_html(html_template)
 
     # タブのHTMLを生成
     tabs_html = generate_tabs_from_csv(df, html_template)
