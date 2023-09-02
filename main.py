@@ -409,62 +409,46 @@ def get_experiences_lst(df):
     return experiences_html
 
 
-# ６-青
-def experiences_oneword_lst(df, index):
-    # 性別の数値を文字列に変換
-    gender_mapping = {
-        '1': '男性',
-        '2': '女性'
-    }
-    gender_value = df.loc[index, '2. 回答者様の性別を教えて下さい']
-    gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
-
-    # 年齢層の数値を文字列に変換
-    age_group_mapping = {
-        '2': '20代',
-        '3': '30代',
-        '4': '40代',
-        '5': '50代',
-        '6': '60代',
-        '7': '70代',
-        '8': '80代'
-    }
-    age_group_value = df.loc[index, '3. 回答者様の年齢を教えて下さい']
-    age_group = age_group_mapping.get(str(age_group_value), '不明') # 数値が2～8の範囲外の場合は'不明'とする
-
-    # 他のカラムの取得
+# ６-h3
+def get_h3_html_from_df(df, index):
     content = df.loc[index, '10. 前問で答えた体験談のメリットを「一言」で言い表してください']
-    # 「。」で分割
-    sentences = content.split('。')
-    # 1行目をdivタグで囲む
-    first_line = f'<div class="c-balloon__text"><p>{sentences[0]}。</p>'
-    # 2行目以降をpタグで囲み、改行を挿入
-    rest_lines = "。<br>".join(sentences[1:])
-    p_html = f'{first_line}<p>{rest_lines}</p><span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div>'
-
-    # 年齢層を40代以上と40代未満に分ける
-    age_40_or_above = int(age_group_value) >= 4
-
-    if gender == '男性':
-        if age_40_or_above:
-            image_file = 'タブ男性2アイコン.webp'
-        else:
-            image_file = 'タブ男性アイコン.webp'
-    else:
-        if age_40_or_above:
-            image_file = 'タブ女性2アイコン.webp'
-        else:
-            image_file = 'タブ女性アイコン.webp'
-
     h3_html = f'<h3 class="wp-block-heading" id="kouka-1">{content}</h3>'
-    return h3_html, p_html, image_file
+    return h3_html
 
 
-# ６-青 h3
-def replace_experiences(df,placeholder_tuple):
-    h3_html, p_html, image_file = experiences_oneword_lst(df, placeholder_tuple[0])
-    new_img_tag = f'<img decoding="async" loading="lazy" src="{image_file}" alt="{df.loc[placeholder_tuple[0], "gender"]}, {df.loc[placeholder_tuple[0], "age_group"]}" class="c-balloon__iconImg" width="80px" height="80px">'
-    return h3_html, p_html, new_img_tag
+# ６-アイコン選定
+def get_image_file_from_df(df, index):
+    # アイコンの選定
+    age_group_value = df.loc[index, '3. 回答者様の年齢を教えて下さい']
+    gender = df.loc[index, '2. 回答者様の性別を教えて下さい']
+    age_40_or_above = int(age_group_value) >= 4
+    if gender == '男性':
+        image_file = 'タブ男性2アイコン.webp' if age_40_or_above else 'タブ男性アイコン.webp'
+    else:
+        image_file = 'タブ女性2アイコン.webp' if age_40_or_above else 'タブ女性アイコン.webp'
+    
+    # HTMLテンプレの場所特定とフォーマット
+    new_img_tag = f'<img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/{image_file}" alt="" class="c-balloon__iconImg" width="80px" height="80px">'
+    
+    return new_img_tag
+
+
+# ６ ｺﾒﾝﾄ 
+def get_6_comment(df, index):
+    content = df.loc[index, '9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい']
+    sentences = content.split('。')
+    first_ptag = f'<p>{sentences[0]}。</p>'
+    p_html = f'<div class="c-balloon__text">{first_ptag}<span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div>'
+    return p_html
+
+
+# ６ 本文 2つ目から利用「。」で改行
+def get_6_text(df, index):
+    content = df.loc[index, '9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい']
+    sentences = content.split('。')
+    for sentence in sentences[1:]:
+    #     merits_html = f'<p>意味があるとされるおすすめポイントは{merits_formatted}などがあります。</p>' # 新しく置換するもの
+    # return merits_html
 
 
 # ７-赤 recommend
@@ -613,7 +597,7 @@ def process_all_rows(df, html_template):
 
 
 
-# ６-青 h3
+# ６-青 h3 + ｲﾗｽﾄ + pﾀｸﾞ1行目 + pﾀｸﾞ2行目のﾙｰﾌﾟ
 def loop_and_replace_experiences(df, html_template):
     '''
     データフレーム内の説明文をループし、それぞれのプレースホルダーを置き換えます
