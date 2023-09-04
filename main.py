@@ -94,7 +94,7 @@ def remove_5_2_after_divs(html_content):
 
 
 # 5の2つ目のpタグ除去
-def remove_5_2_after_p():
+def remove_5_2_after_p(html_template5_p):
     """
     'html_template5_p' に含まれる特定の内容を持つ <p> タグを削除する関数。
 
@@ -116,7 +116,7 @@ def remove_5_2_after_p():
 
 
 # 6-<h3>タグの2〜4までを削除
-def remove_6_blue_h3():
+def remove_6_blue_h3(html_template6_h3):
     """
     'html_template6_h3' に含まれる特定のID属性を持つ <h3> タグを削除する関数。
 
@@ -166,7 +166,7 @@ def remove_6_to_blue_divs(html_content):
 
 
 # 6-青のpタグ削除
-def remove_6_to_blue_p():
+def remove_6_to_blue_p(html_template6_p):
     """
     'html_template6_p' に含まれる特定のテキストを持つ <p> タグを削除する関数。
 
@@ -554,10 +554,16 @@ def generate_tabs_from_csv(df, html_template):
 # ３ ループ処理
 # タブのヘッダー部分を生成をループ処理
 def generate_tab_headers(df):
+    if df is None:
+        print("Warning: df がNoneになっています。")
+        return ''
     num_rows = len(df)
     tab_headers = []
     for i in range(num_rows):
         description = get_one_word_description(df)
+        if description is None:
+            print("Warning: description is None")
+            continue
         tab_headers.append(f'<li class="c-tabList__item" role="presentation"><button role="tab" class="c-tabList__button" aria-selected="false" aria-controls="tab-6deac381-{i}" data-onclick="tabControl">{description}</button></li>')
     return ''.join(tab_headers)
 
@@ -565,16 +571,38 @@ def generate_tab_headers(df):
 # ３ ループ処理
 # タブの内容部分を生成するループ処理
 def generate_tab_contents(df, html_template):
+    if df is None:
+        print("Warning: df が Noneになっています。")
+        return ''
+    if html_template is None:
+        print("Warning: html_template が Noneになっています。")
+        return ''
+        
     num_rows = len(df)
     tab_contents = []
     for i in range(num_rows):
         content = replace_p_content(html_template, df.loc[i])
+        if content is None:
+            print(f"Warning: {i}行目の content が None になっています。")
+            continue
+            
         image_file = one_word_comments_illustration(df, i)
+        if image_file is None:
+            print(f"Warning: {i}行目の image_file が None になっています。")
+            continue
+            
         content = content.replace('<img src="placeholder_image.webp">', f'<img src="{image_file}">')
+        
         comment_content = one_word_comments(df)
+        if comment_content is None:
+            print("Warning: {i}行目の comment_content が None になっています。")
+            continue
+            
         content += comment_content
         tab_contents.append(content)
+        
     return ''.join(tab_contents)
+
 
 
 # ５ ループ処理
@@ -762,10 +790,7 @@ def generate_html_content(file_path):
 
 
     # メイン関数にループ処理を反映
-    html_template = process_all_rows(html_template)
-    html_template = generate_full_html(html_template)
-        # メイン関数にループ処理を反映
-    html_template = process_all_rows(html_template)
+    html_template = process_all_rows(df,html_template)
     
     # generate_full_html関数でさらにhtml_templateがどのように変更されるかを確認
     html_template = generate_full_html(df, html_template)
@@ -802,7 +827,6 @@ def on_generate_button_click():
         text_widget.insert(tk.END, html_content)
     except Exception as e:
         result_label.config(text=f"エラー: {e}")
-
 
 
 def copy_to_clipboard():
@@ -863,7 +887,7 @@ result_label.pack()
 
 # テキストウィジェットとスクロールバーの設置
 text_widget = tk.Text(root, wrap=tk.NONE)
-# text_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+text_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 scroll_y = ttk.Scrollbar(root, orient=tk.VERTICAL, command=text_widget.yview)
 scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
