@@ -5,7 +5,6 @@ from tkinter import ttk
 from tkinter import filedialog
 import pandas as pd
 import requests
-import re
 from bs4 import BeautifulSoup
 
 
@@ -570,7 +569,7 @@ def generate_tab_contents(df, html_template):
     tab_contents = []
     for i in range(num_rows):
         content = replace_p_content(html_template, df.loc[i])
-        image_file = experiences_oneword_lst(df, i)
+        image_file = one_word_comments_illustration(df, i)
         content = content.replace('<img src="placeholder_image.webp">', f'<img src="{image_file}">')
         comment_content = one_word_comments(df)
         content += comment_content
@@ -602,15 +601,20 @@ def process_all_rows(df, html_template):
 # ６-青 h3 + ｲﾗｽﾄ + pﾀｸﾞ1行目 + pﾀｸﾞ2行目のﾙｰﾌﾟ
 def generate_full_html(df, html_template):
     full_html = ""
-    for index in df.iterrows():
-        h3_html = get_h3_html_from_df(df, index)
-        image_file = get_image_file_from_df(df, index)
-        comment = get_6_comment(df, index)
-        text = get_6_text(df, index)
+    for index, row in df.iterrows():  # indexとrowを明示的に取得
+        h3_html = get_h3_html_from_df(row)  # rowを渡す
+        image_file = get_image_file_from_df(row)  # rowを渡す
+        comment = get_6_comment(row)  # rowを渡す
+        text = get_6_text(row)  # rowを渡す
         full_html += f"{h3_html}\n{image_file}\n{comment}\n{text}\n"
     
-    final_html = html_template.format(content=full_html)
+    if "{content}" in html_template:  # プレースホルダーが存在するか確認
+        final_html = html_template.format(content=full_html)
+    else:
+        final_html = html_template + full_html  # プレースホルダーがない場合は、単に追加
+    
     return final_html
+
 
 
 
@@ -662,13 +666,6 @@ def replace_placeholders(html_template, df):
         
         # ６-赤
         '<ul class="is-style-good_list">\n<li><a href="#kouka-1" automate_uuid="d3495264-e1e1-4675-84cb-c872e762cc7d" data-nodal="">簡単に綺麗を保てる</a></li>\n<li><a href="#kouka-2" automate_uuid="3087e4ad-8612-461b-a0fc-6ff92220ce85" data-nodal="">家族みんなで楽しめる</a></li>\n<li><a href="#kouka-3" automate_uuid="9740b60d-80c7-4676-8755-257f3bae9e4a" data-nodal="">飲むだけでアンチエイジングできる</a></li>\n<li><a href="#kouka-4" automate_uuid="a246317f-35a5-40a4-95fe-3819e40e41f0" data-nodal="">ダイエットにオススメ</a></li>\n</ul>': (get_experiences_lst, {}),
-        
-        # ６-青 h3
-        '<h3 class="wp-block-heading" id="kouka-1">簡単に綺麗を保てる</h3>': (replace_experiences, {'index': 0, 'type': 'h3'}),
-        '<p>色々な商品を試しましたが…</p>': (replace_experiences, {'index': 0, 'type': 'p'}),
-
-
-        '<img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px">': (replace_experiences, {'index': 0, 'type': 'img'}),
         
         # ７-赤
         '<p>特に「便秘気味な人」「手軽に美を手に入れたい人」「安さを求める人」におすすめです。</p>':(get_recommends, {}),
@@ -767,6 +764,11 @@ def generate_html_content(file_path):
     # メイン関数にループ処理を反映
     html_template = process_all_rows(html_template)
     html_template = generate_full_html(html_template)
+        # メイン関数にループ処理を反映
+    html_template = process_all_rows(html_template)
+    
+    # generate_full_html関数でさらにhtml_templateがどのように変更されるかを確認
+    html_template = generate_full_html(df, html_template)
 
     # タブのHTMLを生成
     tabs_html = generate_tabs_from_csv(df, html_template)
@@ -808,8 +810,8 @@ def copy_to_clipboard():
     selected_text = text_widget.get(tk.SEL_FIRST, tk.END)
     text_widget.clipboard_clear()
     text_widget.clipboard_append(selected_text)
-    text_widget.clipboard_own()
     text_widget.tag_remove(tk.SEL, "1.0", tk.END)
+
 
 # Tkinterウィンドウを作成
 root = tk.Tk()
