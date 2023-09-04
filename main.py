@@ -602,7 +602,7 @@ def process_all_rows(df, html_template):
 # ６-青 h3 + ｲﾗｽﾄ + pﾀｸﾞ1行目 + pﾀｸﾞ2行目のﾙｰﾌﾟ
 def generate_full_html(df, html_template):
     full_html = ""
-    for index, row in df.iterrows():
+    for index in df.iterrows():
         h3_html = get_h3_html_from_df(df, index)
         image_file = get_image_file_from_df(df, index)
         comment = get_6_comment(df, index)
