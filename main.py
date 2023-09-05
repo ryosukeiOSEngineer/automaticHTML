@@ -49,10 +49,23 @@ def remove_3_red_buttons(html_template):
 # 3-赤 6-赤 2〜４アイコンと吹き出し部分削除
 def remove_3_and_6_elements(html_content, indices):
     soup = BeautifulSoup(html_content, 'html.parser')
-    elements = soup.find_all('div', class_='c-balloon -bln-left')
-    for index in sorted(indices, reverse=True):
-        elements[index].decompose()
-    return str(soup)
+    
+    # soup が None でないか確認
+    if soup is not None:
+        elements = soup.find_all('div', class_='c-balloon -bln-left')
+        
+        # elements が None または空でないか確認
+        if elements:
+            for index in sorted(indices, reverse=True):
+                elements[index].decompose()
+            return str(soup)
+        else:
+            print("Warning: 要素がない、もしくは空です。")
+            return None  # または適当なエラーメッセージを返す
+    else:
+        print("Warning: スープがないです。")
+        return None  # または適当なエラーメッセージを返す
+
 
 
 # ３-赤の2〜４目タグに付属してるものを削除
@@ -84,14 +97,24 @@ def remove_5_2_after_divs(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # クラス名'swell-block-balloon'を持つすべての<div>要素を選択
-    divs_to_remove = soup.find_all('div', class_='swell-block-balloon')
+    # soup が None でないか確認
+    if soup is not None:
+        divs_to_remove = soup.find_all('div', class_='swell-block-balloon')
+
+        # elements が None または空でないか確認
+        if divs_to_remove:
 
     # 2つ目以降の要素を削除
-    for div_to_remove in divs_to_remove[1:]:
-        div_to_remove.decompose() # 削除
+            for div_to_remove in divs_to_remove[1:]:
+                div_to_remove.decompose() # 削除
 
-    return str(soup)
-
+            return str(soup)
+        else:
+            print("Warning: divs_to_remove1 は「なし」もしくは「空」です。")
+            return None  # または適当なエラーメッセージを返す
+    else:
+        print("Warning: スープは空です。")
+        return None  # または適当なエラーメッセージを返す
 
 # 5の2つ目のpタグ除去
 def remove_5_2_after_p(html_template5_p):
@@ -155,14 +178,24 @@ def remove_6_to_blue_divs(html_content):
     """
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # クラス名'swell-block-balloon'を持つすべての<div>要素を選択
-    divs_to_remove = soup.find_all('div', class_='swell-block-balloon')
+    
+    # soup が None でないか確認
+    if soup is not None:
+        # クラス名'swell-block-balloon'を持つすべての<div>要素を選択
+        divs_to_remove = soup.find_all('div', class_='swell-block-balloon')
 
-    # 2つ目以降の要素を削除
-    for div_to_remove in divs_to_remove[1:]:
-        div_to_remove.decompose() # 削除
-
-    return str(soup)
+        # elements が None または空でないか確認
+        if divs_to_remove:
+            # 2つ目以降の要素を削除
+            for div_to_remove in divs_to_remove[1:]:
+                div_to_remove.decompose() # 削除
+            return str(soup)
+        else:
+            print("Warning: divs_to_remove2 は「なし」もしくは「空」です。")
+            return None  # または適当なエラーメッセージを返す
+    else:
+        print("Warning: スープは空です。")
+        return None  # または適当なエラーメッセージを返す
 
 
 # 6-青のpタグ削除
@@ -184,20 +217,30 @@ def remove_6_to_blue_p(html_template6_p):
                 <p>もともと便秘薬もちで自分の体型に自信がなかったのですが、便秘に悩まなくなり、体重も少しずつ落ちていったので使って良かったです。</p>'''
     soup = BeautifulSoup(html_template6_p, 'html.parser')
     
-    # 削除したいテキストを含む<p>タグを検索
-    tags_to_remove = soup.find_all('p', string=['こんなに簡単に綺麗になれるとは思いませんでした。',
-                                            '色んな商品が売ってますが、水素水は、2週間くらい飲みつづければ、効果が期待できる素晴らしい商品です。',
-                                            '私は美容のために愛飲していますが、パパは健康維持の一環として飲んでいます。',
-                                            'ちなみに、子どもは学力向上のために飲んでいます。',
-                                            'それぞれ飲む目的は違いますが、一緒に続けられるので購入がしやすいです。',
-                                            '即効性はないのですが飲み続けていくうちに、夕方になると気になっていたむくみに改善が見られたり、肌にハリつやが戻るようになってきました、値段は高いですがそれだけの効果は実感できます。',
-                                            '飲んでみた感想は飲みやすくて水のように飲めました。',
-                                            '癖もないので飲みやすく、継続して続けることができました。',
-                                            'もともと便秘薬もちで自分の体型に自信がなかったのですが、便秘に悩まなくなり、体重も少しずつ落ちていったので使って良かったです。'])
+    
+    # soup が None でないか確認
+    if soup is not None:
+        # 削除したいテキストを含む<p>タグを検索
+        tags_to_remove = soup.find_all('p', string=['こんなに簡単に綺麗になれるとは思いませんでした。',
+                                                '色んな商品が売ってますが、水素水は、2週間くらい飲みつづければ、効果が期待できる素晴らしい商品です。',
+                                                '私は美容のために愛飲していますが、パパは健康維持の一環として飲んでいます。',
+                                                'ちなみに、子どもは学力向上のために飲んでいます。',
+                                                'それぞれ飲む目的は違いますが、一緒に続けられるので購入がしやすいです。',
+                                                '即効性はないのですが飲み続けていくうちに、夕方になると気になっていたむくみに改善が見られたり、肌にハリつやが戻るようになってきました、値段は高いですがそれだけの効果は実感できます。',
+                                                '飲んでみた感想は飲みやすくて水のように飲めました。',
+                                                '癖もないので飲みやすく、継続して続けることができました。',
+                                                'もともと便秘薬もちで自分の体型に自信がなかったのですが、便秘に悩まなくなり、体重も少しずつ落ちていったので使って良かったです。'])
 
-    # 見つかったタグを削除
-    for tag in tags_to_remove:
-        tag.decompose()
+        if tags_to_remove:
+            # 見つかったタグを削除
+            for tag in tags_to_remove:
+                tag.decompose()
+        else:
+            print("Warning: tags_to_remove は「なし」もしくは「空」です。")
+            return None  # または適当なエラーメッセージを返す
+    else:
+        print("Warning: スープは空です。")
+        return None  # または適当なエラーメッセージを返す
 
 
 
