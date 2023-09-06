@@ -169,12 +169,6 @@ def remove_6_blue_h3(html_template6_h3):
 def remove_6_to_blue_divs(html_content):
     """
     'swell-block-balloon'クラスを持つ<div>要素の中で、最初の要素以外をすべて削除する関数。
-    
-    Args:
-    - html_content (str): 処理対象のHTMLコンテンツ。
-
-    Returns:
-    - str: 処理後のHTMLコンテンツ。
     """
     soup = BeautifulSoup(html_content, 'html.parser')
 
@@ -187,7 +181,7 @@ def remove_6_to_blue_divs(html_content):
         # elements が None または空でないか確認
         if divs_to_remove:
             # 2つ目以降の要素を削除
-            for div_to_remove in divs_to_remove[1:]:
+            for div_to_remove in divs_to_remove[9:]:
                 div_to_remove.decompose() # 削除
             return str(soup)
         else:
