@@ -86,155 +86,128 @@ def remove_3_to_red_tabs(html_content):
 # 5-2枚目以降の削除
 def remove_5_2_after_divs(html_content):
     """
-    'swell-block-balloon'クラスを持つ<div>要素の中で、最初の要素以外をすべて削除する関数。
-    
-    Args:
-    - html_content (str): 処理対象のHTMLコンテンツ。
-
-    Returns:
-    - str: 処理後のHTMLコンテンツ。
+    pタグから3つ前の親要素を削除
     """
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # クラス名'swell-block-balloon'を持つすべての<div>要素を選択
-    # soup が None でないか確認
-    if soup is not None:
-        divs_to_remove = soup.find_all('div', class_='swell-block-balloon')
+    delete_5_div_text_lst = [
+        "今までは普通の安いミネラルウォーターを飲んでいましたが、水素水に変えてから便通がよくなりました。",
+        "年齢を重ねるごとに肌のたるみやくすみが気になるようになったり、夕方の足のむくみに悩みをかかえていました。"
+        "今まではダイエットを継続することが難しくて何度も試して失敗していたのですが水素水を使い始めて、毎日飲むだけなので簡単に始められて、便秘も良くなり、苦にならずに継続して飲むことができました。",
+    ]
 
-        # elements が None または空でないか確認
-        if divs_to_remove:
+    for text in delete_5_div_text_lst:
+        p_elements = soup.find_all('p', string=text)
+        for p_element in p_elements:
+            # p要素の親要素を取得
+            parent_element = p_element.find_parent()
+            if parent_element:
+                # p要素が4つ以上親要素内にある場合に削除
+                if len(parent_element.find_all('p')) >= 4:
+                    print(f"テキスト '{text}' が見つかりました。削除します。")
+                    parent_element.decompose()
+                else:
+                    print(f"テキスト '{text}' の親要素に他のp要素が足りず、削除できませんでした。")
+            else:
+                print(f"テキスト '{text}' が見つかりませんでした。")
 
-    # 2つ目以降の要素を削除
-            for div_to_remove in divs_to_remove[1:]:
-                div_to_remove.decompose() # 削除
-
-            return str(soup)
-        else:
-            print("Warning: divs_to_remove1 は「なし」もしくは「空」です。")
-            return None  # または適当なエラーメッセージを返す
-    else:
-        print("Warning: スープは空です。")
-        return None  # または適当なエラーメッセージを返す
+    return str(soup)
 
 # 5の2つ目のpタグ除去
-def remove_5_2_after_p(html_template5_p):
+def remove_5_p_delete(html_template):
     """
-    'html_template5_p' に含まれる特定の内容を持つ <p> タグを削除する関数。
-
-    Returns:
-    - str: 処理後のHTMLコンテンツ。
+    ５の1つ目のpタグ2番目のみを除去
     """
-    html_template5_p = '''<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color">便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。</mark></p>'''
-    soup = BeautifulSoup(html_template5_p, 'html.parser')
 
-    # 削除したい内容と一致するpタグを取得
-    target_content = '便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。'
-    target_p = soup.find('p', string=target_content)
+    text_5_p_list = [
+        "便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。",
+    ]
 
-    # タグを削除
-    if target_p:
-        target_p.decompose()
+    soup = BeautifulSoup(html_template, 'html.parser')
 
-    return str(soup)
-
-
-# 6-<h3>タグの2〜4までを削除
-def remove_6_blue_h3(html_template6_h3):
-    """
-    'html_template6_h3' に含まれる特定のID属性を持つ <h3> タグを削除する関数。
-
-    Returns:
-    - str: 処理後のHTMLコンテンツ。
-    """
-    html_template6_h3 = '''<h3 class="wp-block-heading" id="kouka-1">何かのテキスト</h3>
-                <h3 class="wp-block-heading" id="kouka-2">家族みんなで楽しめる</h3>
-                <h3 class="wp-block-heading" id="kouka-3">飲むだけでアンチエイジングできる</h3>
-                <h3 class="wp-block-heading" id="kouka-4">ダイエットにオススメ</h3>
-                <h3 class="wp-block-heading" id="kouka-5">その他のテキスト</h3>'''
-    soup = BeautifulSoup(html_template6_h3, 'html.parser')
-
-    # 削除したいid属性をリストに格納
-    ids_to_remove = ['kouka-2', 'kouka-3', 'kouka-4']
-
-    # id属性で検索して削除
-    for id_to_remove in ids_to_remove:
-        tag_to_remove = soup.find('h3', id=id_to_remove)
-        if tag_to_remove:
-            tag_to_remove.decompose()
-
-    return str(soup)
-
-
-# ６-青 'swell-block-balloon'クラスの2番目以降を削除
-def remove_6_to_blue_divs(html_content):
-    """
-    'swell-block-balloon'クラスを持つ<div>要素の中で、最初の要素以外をすべて削除する関数。
-    """
-    soup = BeautifulSoup(html_content, 'html.parser')
-
-    
-    # soup が None でないか確認
-    if soup is not None:
-        # クラス名'swell-block-balloon'を持つすべての<div>要素を選択
-        divs_to_remove = soup.find_all('div', class_='swell-block-balloon')
-
-        # elements が None または空でないか確認
-        if divs_to_remove:
-            # 2つ目以降の要素を削除
-            for div_to_remove in divs_to_remove[9:]:
-                div_to_remove.decompose() # 削除
-            return str(soup)
+    text_5_p = [soup.find('p', string=text) for text in text_5_p_list]
+    for i, text in text_5_p:
+        if text:
+            print(f"テキスト '{text_5_p_list[i]}' が見つかりました。削除します。")
+            text.decompose()
         else:
-            print("Warning: divs_to_remove2 は「なし」もしくは「空」です。")
-            return None  # または適当なエラーメッセージを返す
-    else:
-        print("Warning: スープは空です。")
-        return None  # または適当なエラーメッセージを返す
+            print(f"テキスト '{text_5_p_list[i]}' が見つかりませんでした。")
+
+    return str(soup)
+
+
+# ６-青 'divとh３の削除
+def remove_6_to_blue_divs(html_template):
+    '''
+    6の青にある特定のh3とClassを削除
+    '''
+
+    soup = BeautifulSoup(html_template, 'html.parser')
+
+    # クラス名'c-balloon'を持つすべての<div>要素を選択
+    delete_6_h3_lst = [
+        "家族みんなで楽しめる",
+        "飲むだけでアンチエイジングできる",
+        "ダイエットにオススメ",
+    ]
+    for i, text in enumerate(delete_6_h3_lst):
+        tag = soup.find('h3', string=text)
+        if tag:
+            print(f"テキスト '{text}' が見つかりました。削除します。")
+            tag.decompose()
+        else:
+            print(f"テキスト '{text}' が見つかりませんでした。")
+
+    delete_6_div_text_lst = [
+        "水素水は飲みやすいので、好き嫌いなく、家族みんなで飲める所が気に入っています。",
+        "水素水には老化や病気の原因と言われている活性酸素の除去に効果があり、デトックスやアンチエイジング効果があるということで飲み始めました。"
+        "私は通っていたエステで紹介されて、ダイエットや美容のためにいいと言われていたので飲んでみることにしました。",
+    ]
+
+    for i, text in enumerate(delete_6_div_text_lst):
+        p_element = soup.find('p', string=text)
+        if p_element:
+            div_element = p_element.find_parent('div').find_parent('div', class_='c-balloon -bln-left')
+            if div_element:
+                print(f"テキスト '{text}' が見つかりました。削除します。")
+                div_element.decompose()
+            else:
+                print(f"テキスト '{text}' が見つかりませんでした。")
+
+    return str(soup)
 
 
 # 6-青のpタグ削除
-def remove_6_to_blue_p(html_template6_p):
+def remove_6_p_delete(html_template):
     """
-    'html_template6_p' に含まれる特定のテキストを持つ <p> タグを削除する関数。
-
-    Returns:
-    - str: 処理後のHTMLコンテンツ。
+    6-pタグ全て削除
     """
-    html_template6_p = '''<p>こんなに簡単に綺麗になれるとは思いませんでした。</p>
-                <p>色んな商品が売ってますが、水素水は、2週間くらい飲みつづければ、効果が期待できる素晴らしい商品です。</p>
-                <p>私は美容のために愛飲していますが、パパは健康維持の一環として飲んでいます。</p>
-                <p>ちなみに、子どもは学力向上のために飲んでいます。</p>
-                <p>それぞれ飲む目的は違いますが、一緒に続けられるので購入がしやすいです。</p>
-                <p>即効性はないのですが飲み続けていくうちに、夕方になると気になっていたむくみに改善が見られたり、肌にハリつやが戻るようになってきました、値段は高いですがそれだけの効果は実感できます。</p>
-                <p>飲んでみた感想は飲みやすくて水のように飲めました。</p>
-                <p>癖もないので飲みやすく、継続して続けることができました。</p>
-                <p>もともと便秘薬もちで自分の体型に自信がなかったのですが、便秘に悩まなくなり、体重も少しずつ落ちていったので使って良かったです。</p>'''
-    soup = BeautifulSoup(html_template6_p, 'html.parser')
     
+    soup = BeautifulSoup(html_template, 'html.parser')
     
-    # soup が None でないか確認
-    if soup is not None:
-        # 削除したいテキストを含む<p>タグを検索
-        tags_to_remove = soup.find_all('p', string=['こんなに簡単に綺麗になれるとは思いませんでした。',
-                                                '色んな商品が売ってますが、水素水は、2週間くらい飲みつづければ、効果が期待できる素晴らしい商品です。',
-                                                '私は美容のために愛飲していますが、パパは健康維持の一環として飲んでいます。',
-                                                'ちなみに、子どもは学力向上のために飲んでいます。',
-                                                'それぞれ飲む目的は違いますが、一緒に続けられるので購入がしやすいです。',
-                                                '即効性はないのですが飲み続けていくうちに、夕方になると気になっていたむくみに改善が見られたり、肌にハリつやが戻るようになってきました、値段は高いですがそれだけの効果は実感できます。',
-                                                '飲んでみた感想は飲みやすくて水のように飲めました。',
-                                                '癖もないので飲みやすく、継続して続けることができました。',
-                                                'もともと便秘薬もちで自分の体型に自信がなかったのですが、便秘に悩まなくなり、体重も少しずつ落ちていったので使って良かったです。'])
+    text_6_p_list = [
+        "こんなに簡単に綺麗になれるとは思いませんでした。",
+        "色んな商品が売ってますが、水素水は、2週間くらい飲みつづければ、効果が期待できる素晴らしい商品です。",
+        "ちなみに、子どもは学力向上のために飲んでいます。</p><p>それぞれ飲む目的は違いますが、一緒に続けられるので購入がしやすいです。",
+        "即効性はないのですが飲み続けていくうちに、夕方になると気になっていたむくみに改善が見られたり、肌にハリつやが戻るようになってきました、値段は高いですがそれだけの効果は実感できます。",
+        "飲んでみた感想は飲みやすくて水のように飲めました。",
+        "癖もないので飲みやすく、継続して続けることができました。",
+        "もともと便秘薬もちで自分の体型に自信がなかったのですが、便秘に悩まなくなり、体重も少しずつ落ちていったので使って良かったです。",
+        "私は美容のために愛飲していますが、パパは健康維持の一環として飲んでいます。"
+        ""
+        ""
+    ]
 
-        if tags_to_remove:
-            # 見つかったタグを削除
-            for tag in tags_to_remove:
-                tag.decompose()
+    text_6_p = [soup.find('p', string=text) for text in text_6_p_list]
+    for i, text in text_6_p:
+        if text:
+            print(f"テキスト '{text_6_p_list[i]}' が見つかりました。削除します。")
+            text.decompose()
         else:
-            print("Warning: tags_to_remove は「なし」もしくは「空」です。")
-            return None  # または適当なエラーメッセージを返す
-    else:
-        print("Warning: スープは空です。")
-        return None  # または適当なエラーメッセージを返す
+            print(f"テキスト '{text_6_p_list[i]}' が見つかりませんでした。")
+
+    return str(soup)
+
 
 
 
@@ -817,16 +790,13 @@ def generate_html_content(file_path):
     html_template = remove_5_2_after_divs(html_template)
 
     # 5の2つ目のpタグ除去
-    html_template = remove_5_2_after_p(html_template)
+    html_template = remove_5_p_delete(html_template)
 
-    # 6-<h3>タグの2〜4までを削除
-    html_template = remove_6_blue_h3(html_template)
-
-    # 6-青 クラスの2番目以降を削除
+    # 6-青 divとh3タグを除去
     html_template = remove_6_to_blue_divs(html_template)
 
     # 6-青のpタグ削除
-    html_template = remove_6_to_blue_p(html_template)
+    html_template = remove_6_p_delete(html_template)
 
 
     # メイン関数にループ処理を反映
