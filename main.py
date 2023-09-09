@@ -40,8 +40,12 @@ def remove_3_red_buttons(html_template):
     # 一致するボタンを削除
     for button_text in buttons_to_remove:
         button = soup.find('button', string=button_text)
-        if button:
-            button.decompose()
+        for i, text in button:
+            if text:
+                print(f"テキスト '{button[i]}' が見つかりました。削除します。")
+                text.decompose()
+            else:
+                print(f"テキスト '{button[i]}' が見つかりませんでした。")
 
     return str(soup)
 
@@ -126,7 +130,7 @@ def remove_5_p_delete(html_template):
     soup = BeautifulSoup(html_template, 'html.parser')
 
     text_5_p = [soup.find('p', string=text) for text in text_5_p_list]
-    for i, text in text_5_p:
+    for i, text in enumerate(text_5_p):
         if text:
             print(f"テキスト '{text_5_p_list[i]}' が見つかりました。削除します。")
             text.decompose()
@@ -160,7 +164,7 @@ def remove_6_to_blue_divs(html_template):
 
     delete_6_div_text_lst = [
         "水素水は飲みやすいので、好き嫌いなく、家族みんなで飲める所が気に入っています。",
-        "水素水には老化や病気の原因と言われている活性酸素の除去に効果があり、デトックスやアンチエイジング効果があるということで飲み始めました。"
+        "水素水には老化や病気の原因と言われている活性酸素の除去に効果があり、デトックスやアンチエイジング効果があるということで飲み始めました。",
         "私は通っていたエステで紹介されて、ダイエットや美容のためにいいと言われていたので飲んでみることにしました。",
     ]
 
@@ -199,7 +203,7 @@ def remove_6_p_delete(html_template):
     ]
 
     text_6_p = [soup.find('p', string=text) for text in text_6_p_list]
-    for i, text in text_6_p:
+    for i, text in enumerate(text_6_p):
         if text:
             print(f"テキスト '{text_6_p_list[i]}' が見つかりました。削除します。")
             text.decompose()
