@@ -6,6 +6,7 @@ from tkinter import filedialog
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+import re
 
 
 # HTMLテンプレートの取得
@@ -26,6 +27,8 @@ def replace_specific_word(html_template, specific_word):
 
 # *******************削除部分の関数定義*********************
 
+
+
 # ３-赤 2〜4目のボタンタグを削除
 def remove_3_red_buttons(html_template):
     soup = BeautifulSoup(html_template, 'html.parser')
@@ -40,41 +43,43 @@ def remove_3_red_buttons(html_template):
     # 一致するボタンを削除
     for button_text in buttons_to_remove:
         button = soup.find('button', string=button_text)
-        for i, text in button:
-            if text:
-                print(f"テキスト '{button[i]}' が見つかりました。削除します。")
-                text.decompose()
-            else:
-                print(f"テキスト '{button[i]}' が見つかりませんでした。")
+        if button:
+            # print(f"テキスト '{button_text}' が見つかりました。削除します。")
+            button.decompose()
+        else:
+            print(f"テキスト '{button_text}' が見つかりませんでした。")
+
 
     return str(soup)
 
 
-# 3-赤 6-赤 2〜４アイコンと吹き出し部分削除
-def remove_3_and_6_elements(html_content, indices):
+# 3-赤 6-赤 2〜４アイコン削除
+def remove_3_and_6_elements(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
     
-    # soup が None でないか確認
-    if soup is not None:
-        elements = soup.find_all('div', class_='c-balloon -bln-left')
-        
-        # elements が None または空でないか確認
-        if elements:
-            for index in sorted(indices, reverse=True):
-                elements[index].decompose()
-            return str(soup)
-        else:
-            print("Warning: 要素がない、もしくは空です。")
-            return None  # または適当なエラーメッセージを返す
-    else:
-        print("Warning: スープがないです。")
-        return None  # または適当なエラーメッセージを返す
+    icons_delete_lst = [
+        "https://iminain.com/wp-content/uploads/2023/06/men-2-150x150.png",
+        "https://iminain.com/wp-content/uploads/2023/06/icon-5-150x150.png",
+        "https://iminain.com/wp-content/uploads/2023/06/men-1-150x150.png",
+    ]
 
+    for icon in icons_delete_lst:
+        icons_to_remove = soup.find_all('img',{'src':icon, 'class': 'c-balloon__iconImg'})
+        for icon_to_remove in icons_to_remove:
+            if icon_to_remove:
+                icon_to_remove.decompose() # 削除
+
+    return str(soup)
 
 
 # ３-赤の2〜４目タグに付属してるものを削除
 def remove_3_to_red_tabs(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
+
+    p_elements = soup.find_all('p')
+    for p_element in p_elements:
+        print(p_element.get_text())
+
 
     # 削除したいIDのリスト
     ids_to_remove = ['tab-6deac381-1', 'tab-6deac381-2', 'tab-6deac381-3']
@@ -103,17 +108,21 @@ def remove_5_2_after_divs(html_content):
     for text in delete_5_div_text_lst:
         p_elements = soup.find_all('p', string=text)
         for p_element in p_elements:
+            # p_element の型を確認
+            print(type(p_element))
+            
             # p要素の親要素を取得
             parent_element = p_element.find_parent()
             if parent_element:
                 # p要素が4つ以上親要素内にある場合に削除
                 if len(parent_element.find_all('p')) >= 4:
-                    print(f"テキスト '{text}' が見つかりました。削除します。")
+                    # print(f"テキスト '{text}' が見つかりました。削除します。")
                     parent_element.decompose()
                 else:
                     print(f"テキスト '{text}' の親要素に他のp要素が足りず、削除できませんでした。")
             else:
                 print(f"テキスト '{text}' が見つかりませんでした。")
+
 
     return str(soup)
 
@@ -129,10 +138,11 @@ def remove_5_p_delete(html_template):
 
     soup = BeautifulSoup(html_template, 'html.parser')
 
+
     text_5_p = [soup.find('p', string=text) for text in text_5_p_list]
     for i, text in enumerate(text_5_p):
         if text:
-            print(f"テキスト '{text_5_p_list[i]}' が見つかりました。削除します。")
+            # print(f"テキスト '{text_5_p_list[i]}' が見つかりました。削除します。")
             text.decompose()
         else:
             print(f"テキスト '{text_5_p_list[i]}' が見つかりませんでした。")
@@ -145,8 +155,8 @@ def remove_6_to_blue_divs(html_template):
     '''
     6の青にある特定のh3とClassを削除
     '''
-
     soup = BeautifulSoup(html_template, 'html.parser')
+    
 
     # クラス名'c-balloon'を持つすべての<div>要素を選択
     delete_6_h3_lst = [
@@ -157,7 +167,7 @@ def remove_6_to_blue_divs(html_template):
     for i, text in enumerate(delete_6_h3_lst):
         tag = soup.find('h3', string=text)
         if tag:
-            print(f"テキスト '{text}' が見つかりました。削除します。")
+            # print(f"テキスト '{text}' が見つかりました。削除します。")
             tag.decompose()
         else:
             print(f"テキスト '{text}' が見つかりませんでした。")
@@ -168,16 +178,32 @@ def remove_6_to_blue_divs(html_template):
         "私は通っていたエステで紹介されて、ダイエットや美容のためにいいと言われていたので飲んでみることにしました。",
     ]
 
+    # p_elements = soup.find_all('p')
+    # for p_element in p_elements:
+    #     print(p_element.get_text())
+
     for i, text in enumerate(delete_6_div_text_lst):
         p_element = soup.find('p', string=text)
+        print(type(p_element))
         if p_element:
-            div_element = p_element.find_parent('div').find_parent('div', class_='c-balloon -bln-left')
-            if div_element:
-                print(f"テキスト '{text}' が見つかりました。削除します。")
-                div_element.decompose()
+            div_parent = p_element.find_parent('div')
+            if div_parent:
+                div_element = div_parent.find_parent('div', class_='c-balloon -bln-left')
+                if div_element:
+                    # print(f"テキスト '{text}' が見つかりました。削除します。")
+                    div_element.decompose()
+                else:
+                    print(f"テキスト '{text}' が見つかりませんでした。 (div class_='c-balloon -bln-left'が見つかりません)")
             else:
-                print(f"テキスト '{text}' が見つかりませんでした。")
+                print(f"テキスト '{text}' が見つかりませんでした。 (div parentが見つかりません)")
+        else:
+            print(f"テキスト '{text}' が見つかりませんでした。")
 
+    for p in soup.find_all('p'):
+        if "水素水は飲みやすいので、好き嫌いなく、家族みんなで飲める所が気に入っています。" in p.get_text():
+            print(p.get_text())
+
+                  
     return str(soup)
 
 
@@ -205,7 +231,7 @@ def remove_6_p_delete(html_template):
     text_6_p = [soup.find('p', string=text) for text in text_6_p_list]
     for i, text in enumerate(text_6_p):
         if text:
-            print(f"テキスト '{text_6_p_list[i]}' が見つかりました。削除します。")
+            # print(f"テキスト '{text_6_p_list[i]}' が見つかりました。削除します。")
             text.decompose()
         else:
             print(f"テキスト '{text_6_p_list[i]}' が見つかりませんでした。")
@@ -785,7 +811,7 @@ def generate_html_content(file_path):
     # strip_3_and_6_elementsのクラスの削除するインデックス
     indices_to_strip = [1, 2, 3, 5, 6, 7] 
     # 3-赤 2〜4目のボタンタグを削除
-    html_template = remove_3_and_6_elements(html_template, indices_to_strip)
+    html_template = remove_3_and_6_elements(html_template)
 
     # 3-赤の2〜4目タグに付属してるものを削除
     html_template = remove_3_to_red_tabs(html_template)
