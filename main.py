@@ -128,6 +128,7 @@ def remove_5_2_after_divs(html_content):
 
 # 5の2つ目のpタグ除去
 def remove_5_p_delete(html_template):
+    print('remove_5_p_delete 関数が始まりました。')
     """
     ５の1つ目のpタグ2番目のみを除去
     """
@@ -146,7 +147,7 @@ def remove_5_p_delete(html_template):
             text.decompose()
         else:
             print(f"テキスト '{text_5_p_list[i]}' が見つかりませんでした。")
-
+    print('remove_5_p_delete が終わりました。')
     return str(soup)
 
 
