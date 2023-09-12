@@ -137,26 +137,43 @@ def replace_specific_word():
 
 # 3-1 削除
 def deleteSection3_1(html_template, start_marker="<!-- 3-1_DELETE_START -->", end_marker="<!-- 3-1_DELETE_END -->"):
-    pattern = re.escape(start_marker) + ".*?" + re.escape(end_marker)
-    return re.sub(pattern, '', html_template, flags=re.DOTALL)
+    deleted_part3_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
+    match = re.search(deleted_part3_1, html_template, flags=re.DOTALL) # 削除部分（deleted_part3_1）がHTMLファイル（html_template）から探す
+    if match:
+        print("削除部分:")
+        print(match.group(1))
+    return re.sub(deleted_part3_1, '', html_template, flags=re.DOTALL)
+
 
 
 # 3-2 削除
 def deleteSection3_2(html_template, start_marker="<!-- 3-2_DELETE_START -->", end_marker="<!-- 3-2_DELETE_END -->"):
-    pattern = re.escape(start_marker) + ".*?" + re.escape(end_marker)
-    return re.sub(pattern, '', html_template, flags=re.DOTALL)
+    deleted_part3_2 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
+    match = re.search(deleted_part3_2, html_template, flags=re.DOTALL) # 削除部分（deleted_part3_2）がHTMLファイル（html_template）から探す
+    if match:
+        print("削除部分:")
+        print(match.group(1))
+    return re.sub(deleted_part3_2, '', html_template, flags=re.DOTALL)
 
 
 # 5-1 削除
 def deleteSection5_1(html_template, start_marker="<!-- 5-1_DELETE_START -->", end_marker="<!-- 5-1_DELETE_END -->"):
-    pattern = re.escape(start_marker) + ".*?" + re.escape(end_marker)
-    return re.sub(pattern, '', html_template, flags=re.DOTALL)
+    deleted_part5_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
+    match = re.search(deleted_part5_1, html_template, flags=re.DOTALL) # 削除部分（deleted_part5_1）がHTMLファイル（html_template）から探す
+    if match:
+        print("削除部分:")
+        print(match.group(1))
+    return re.sub(deleted_part5_1, '', html_template, flags=re.DOTALL)
 
 
 # 6-1 削除
 def deleteSection6_1(html_template, start_marker="<!-- 6-1_DELETE_START -->", end_marker="<!-- 6-1_DELETE_END -->"):
-    pattern = re.escape(start_marker) + ".*?" + re.escape(end_marker)
-    return re.sub(pattern, '', html_template, flags=re.DOTALL)
+    deleted_part6_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
+    match = re.search(deleted_part6_1, html_template, flags=re.DOTALL) # 削除部分（deleted_part6_1）がHTMLファイル（html_template）から探す
+    if match:
+        print("削除部分:")
+        print(match.group(1))
+    return re.sub(deleted_part6_1, '', html_template, flags=re.DOTALL)
 
 
 # ------------置換部分----------------
