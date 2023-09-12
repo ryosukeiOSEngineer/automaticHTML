@@ -179,7 +179,7 @@ def deleteSection6_1(html_template, start_marker="<!-- 6-1_DELETE_START -->", en
 # ------------置換部分----------------
 
 
-# テンプレートのコピー
+# ループ処理のテンプレートのコピー
 def copy_template(html_content, start_marker, end_marker):
     start_index = html_content.find(start_marker)
     end_index = html_content.find(end_marker) + len(end_marker)
