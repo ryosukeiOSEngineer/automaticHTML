@@ -8,9 +8,28 @@ import pandas as pd
 
 # ------------csv読込 + xxx置換 + html_templateを定義----------------
 
+# GUIでcsvファイルを選択して置換するためのデータを読み込む 
+def browse_file():
+    file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+    file_entry.delete(0, tk.END)
+    file_entry.insert(0, file_path)
+    
+    try:
+        df = pd.read_csv(file_path)
+        print(df.head())
+        result_label.config(text="CSV file successfully loaded.")
+    except Exception as e:
+        print(f"Failed to read CSV file: {e}")
+        result_label.config(text=f"Failed to read CSV file: {e}")
+        return None
+
+    return df
+
+
 # csvファイルを読み込み
 def read_csv(file_path):
     df = pd.read_csv(file_path)
+    print(df.head())
     return df
 
 
@@ -32,40 +51,24 @@ with open('automatic.html', 'r', encoding='utf-8') as htmlfile:
 # 3-1 削除
 def deleteSection3_1(html_template, start_marker="<!-- 3-1_DELETE_START -->", end_marker="<!-- 3-1_DELETE_END -->"):
     deleted_part3_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
-    match = re.search(deleted_part3_1, html_template, flags=re.DOTALL) # 削除部分（deleted_part3_1）がHTMLファイル（html_template）から探す
-    if match:
-        print("削除部分:")
-        # print(match.group(1))
     return re.sub(deleted_part3_1, '', html_template, flags=re.DOTALL)
 
 
 # 3-2 削除
 def deleteSection3_2(html_template, start_marker="<!-- 3-2_DELETE_START -->", end_marker="<!-- 3-2_DELETE_END -->"):
     deleted_part3_2 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
-    match = re.search(deleted_part3_2, html_template, flags=re.DOTALL) # 削除部分（deleted_part3_2）がHTMLファイル（html_template）から探す
-    if match:
-        print("削除部分:")
-        # print(match.group(1))
     return re.sub(deleted_part3_2, '', html_template, flags=re.DOTALL)
 
 
 # 5-1 削除
 def deleteSection5_1(html_template, start_marker="<!-- 5-1_DELETE_START -->", end_marker="<!-- 5-1_DELETE_END -->"):
     deleted_part5_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
-    match = re.search(deleted_part5_1, html_template, flags=re.DOTALL) # 削除部分（deleted_part5_1）がHTMLファイル（html_template）から探す
-    if match:
-        print("削除部分:")
-        # print(match.group(1))
     return re.sub(deleted_part5_1, '', html_template, flags=re.DOTALL)
 
 
 # 6-1 削除
 def deleteSection6_1(html_template, start_marker="<!-- 6-1_DELETE_START -->", end_marker="<!-- 6-1_DELETE_END -->"):
     deleted_part6_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
-    match = re.search(deleted_part6_1, html_template, flags=re.DOTALL) # 削除部分（deleted_part6_1）がHTMLファイル（html_template）から探す
-    if match:
-        print("削除部分:")
-        # print(match.group(1))
     return re.sub(deleted_part6_1, '', html_template, flags=re.DOTALL)
 
 
@@ -120,21 +123,20 @@ def IRDB_search(xxx):
 
 
 
+
 # ------------置換部分の関数定義----------------
 
 
 # <!-- 1-RED -->
 def replace_1_red(df):
     csv_data_1_red = df.loc[0, '8. 水素水のメリットを3つ教えてください']
-    csv_split_list = re.split('、|。', csv_data_1_red)
+    csv_split_list = re.split('、|。|\n', csv_data_1_red)
     csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
     csv_split_join = ' '.join(csv_list_customize)
     html_insert_1_red = f'<p>XXXは{csv_split_join}などが魅力です。</p>'
     return html_insert_1_red
 
-df = pd.read_csv(file_path)
 
-print(replace_1_red(df))
 
 # <!-- 1-BLUE -->
 
@@ -217,6 +219,8 @@ html_template = deleteSection6_1(html_template)
 # 置換処理の実行
 
 
+# <!-- 1-RED -->
+html_template = html_template.replace('<p>XXXは「安い」「綺麗になる」「健康的になる」などが魅力です。</p>', df)
 
 
 
@@ -239,6 +243,7 @@ html_template = deleteSection6_1(html_template)
 
 
 
+
 # 更新された内容を新しいファイルに保存する
 # updated_automatic.htmlに集約させるイメージ
 with open('updated_automatic.html', 'w', encoding='utf-8') as htmlfile:
@@ -246,14 +251,6 @@ with open('updated_automatic.html', 'w', encoding='utf-8') as htmlfile:
 
 
 # ------------GUI----------------
-
-def browse_file():
-    '''
-    GUIでcsvファイルを選択して置換するためのデータを読み込む 
-    '''
-    file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
-    file_entry.delete(0, tk.END)
-    file_entry.insert(0, file_path)
 
 
 def on_generate_button_click():
