@@ -217,6 +217,49 @@ def replace_2_red(html_template, df):
     return updated_html_part_2_red
 
 
+# <<!-- 3-TAG -->
+# 置換を定義する関数
+def define_3_tag(df): 
+    try: # もし成功したら
+        csv_data_3_tag = df.loc[0:, '7. 前問で答えた内容を「一言」で言い表してください'].tolist()
+        csv_split_list = []
+        for item in csv_data_3_tag:
+            cleaned_item = str(item).replace(',', '').replace('、', '').replace('.', '').replace('。', '').replace('\n', '') # いらない文字を何も無しに置換して削除
+            csv_split_list.append(cleaned_item) # リストから要らない文字を消したものをリストに追加
+        csv_list_customize = [
+            f'<li class="c-tabList__item" role="presentation"><button role="tab" class="c-tabList__button" aria-selected="true" aria-controls="tab-6deac381-{index}" data-onclick="tabControl">{item}</button></li>' 
+            for index, item in enumerate(csv_split_list) if item
+        ]
+
+        html_insert_3_tag = '<ul class="c-tabList" role="tablist">' + ''.join(csv_list_customize) + '</ul>'
+
+        return html_insert_3_tag
+    except Exception as e: # もし失敗したら
+        print(f"3-TAGの置換生成に失敗しました: {e}")
+        return None
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_3_tag(html_template, df): 
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_3_tag(df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+    
+    # コメントタグの直後の p タグを置換する正規表現パターン
+    pattern = r'(<!-- 3-TAG -->\s*<ul class="c-tabList" role="tablist">).*?(</ul>)'
+
+    updated_html_part_3_tag = re.sub(pattern, html_insert, html_template, flags=re.DOTALL)
+
+    print("3-TAGの置換が成功しました。")
+    return updated_html_part_3_tag
+
+
+
+
 # <!-- 4-RED -->
 # 置換を定義する関数
 def define_4_red(df): 
@@ -387,73 +430,27 @@ def replace_8_red(html_template, df):
     print("8-REDの置換が成功しました。")
     return updated_html_part_8_red
 
-# ------------検索部分の置換するための関数定義----------------
-
-# アマゾン
-def amazon_search(xxx):
-    xxx = xxx.replace(" ", "+")  # スペースを+に置換
-    base_url = '<a href="https://www.amazon.co.jp/s?k={}" rel="nofollow" class="broken_link" automate_uuid="380281b6-9831-458d-8c58-fd88155abd2f" data-nodal="">サイトを見る</a>'
-    return base_url.format(xxx)
-
-
-# 楽天
-def rakuten_search(xxx):
-    xxx = xxx.replace(" ", "+")  # スペースを+に置換
-    base_url = f'<a rel="nofollow" href="https://search.rakuten.co.jp/search/mall/{xxx}/" automate_uuid="0d65ad2e-2c1f-42fa-bd6b-770a5da511fd" data-nodal="">サイトを見る</a>'
-    return base_url
-
-
-# Yahoo!
-def yahoo_search(xxx):
-    xxx = xxx.replace(" ", "+")  # スペースを+に置換
-    suffix = "&sc_i=shp_pc__searchBox&area=11"
-    base_url = f'<a href="https://shopping.yahoo.co.jp/search?first=1&tab_ex=commerce&fr=shp-prop&mcr=16ce063bd8359bdabe7e46ba148bf218&ts=1666874543&sretry=1&p={xxx}{suffix}" rel="nofollow" automate_uuid="17295db3-ed57-461e-8da9-cf114fb960d0" data-nodal="">サイトを見る</a>'
-    return base_url
-
-
-# google
-def google_search(xxx):
-    xxx = xxx.replace(" ", "+")  # スペースを+に置換
-    base_url = f'<a href="https://scholar.google.co.jp/scholar?hl=ja&as_sdt=0%2C5&q={xxx}&btnG=" automate_uuid="b3b85ab3-87b3-4b18-be11-957952436ce1" data-nodal="">論文を見る</a>'
-    return base_url
-
-
-# cinii
-def cinii_search(xxx):
-    xxx = xxx.replace(" ", "+")  # スペースを+に置換
-    base_url = f'<a href="https://ci.nii.ac.jp/search?q={xxx}" automate_uuid="10ade5da-f2ac-460a-bfda-6c521f1e3fe2" data-nodal="">論文を見る</a>'
-    return base_url
-
-
-# jstage
-def jstage_search(xxx):
-    xxx = xxx.replace(" ", "+")  # スペースを+に置換
-    base_url = f'<a href="https://www.jstage.jst.go.jp/result/global/-char/ja?globalSearchKey={xxx}" automate_uuid="d7c9d5f5-b6ec-40f4-a5c2-0f7cd4046d72" data-nodal="">論文を見る</a>'
-    return base_url
-
-
-# IRDB
-def IRDB_search(xxx):
-    xxx = xxx.replace(" ", "+")  # スペースを+に置換
-    base_url = f'<a href="https://irdb.nii.ac.jp/search?kywd={xxx}&op=%E6%A4%9C%E7%B4%A2&fulltextflg=All&title=&description=&creator=&creatoraf=&creatorid=&publisher=&journal=&pubdate=&open_volume=&open_issue=&open_spage=&open_epage=&doi=&id=&typeid=&versiontypeid=&fundaf=&diaf=&dino=&kikanid=&items_per_page=20&sort=ss_record%2Bdesc" automate_uuid="6b415cab-69da-48cd-96b6-0dc3fbf3a825" data-nodal="">論文を見る</a>'
-    return base_url
 
 
 
 # ------------ループ処理----------------
 
+
+# 削除実行処理
 def delete_sections(html_template):
     html_template = deleteSection3_1(html_template)
     html_template = deleteSection3_2(html_template)
     # html_template = deleteSection5_1(html_template)
-    # html_template = deleteSection6_1(html_template)
+    html_template = deleteSection6_1(html_template)
     return html_template
 
+# 置換実行処理
 def replace_sections(html_template, df):
     html_template = replace_1_red(html_template, df)
     html_template = replace_1_blue(html_template, df)
     html_template = replace_1_green(html_template, df)
     html_template = replace_2_red(html_template, df)
+    html_template = replace_3_tag(html_template, df)
     html_template = replace_4_red(html_template, df)
     html_template = replace_4_blue(html_template, df)
     html_template = replace_7_red(html_template, df)
@@ -462,6 +459,8 @@ def replace_sections(html_template, df):
     # 他の置換処理もここで行う
     return html_template
 
+
+# 全ての処理を実行
 def main_function(html_template, df):
     html_template = delete_sections(html_template)
     html_template = replace_sections(html_template, df)
