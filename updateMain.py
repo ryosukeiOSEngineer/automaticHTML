@@ -62,15 +62,15 @@ def deleteSection3_2(html_template, start_marker="<!-- 3-2_DELETE_START -->", en
 
 
 # 5-1 削除
-# def deleteSection5_1(html_template, start_marker="<!-- 5-1_DELETE_START -->", end_marker="<!-- 5-1_DELETE_END -->"):
-#     deleted_part5_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
-#     return re.sub(deleted_part5_1, '', html_template, flags=re.DOTALL)
+def deleteSection5_1(html_template, start_marker="<!-- 5-1_DELETE_START -->", end_marker="<!-- 5-1_DELETE_END -->"):
+    deleted_part5_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
+    return re.sub(deleted_part5_1, '', html_template, flags=re.DOTALL)
 
 
 # 6-1 削除    調整必須
-# def deleteSection6_1(html_template, start_marker="<!-- 6-1_DELETE_START -->", end_marker="<!-- 6-1_DELETE_END -->"):
-#     deleted_part6_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
-#     return re.sub(deleted_part6_1, '', html_template, flags=re.DOTALL)
+def deleteSection6_1(html_template, start_marker="<!-- 6-1_DELETE_START -->", end_marker="<!-- 6-1_DELETE_END -->"):
+    deleted_part6_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
+    return re.sub(deleted_part6_1, '', html_template, flags=re.DOTALL)
 
 
 # ------------検索部分の定義----------------
@@ -389,6 +389,57 @@ def replace_8_red(html_template, df):
 
 # ------------検索部分の置換するための関数定義----------------
 
+# アマゾン
+def amazon_search(xxx):
+    xxx = xxx.replace(" ", "+")  # スペースを+に置換
+    base_url = '<a href="https://www.amazon.co.jp/s?k={}" rel="nofollow" class="broken_link" automate_uuid="380281b6-9831-458d-8c58-fd88155abd2f" data-nodal="">サイトを見る</a>'
+    return base_url.format(xxx)
+
+
+# 楽天
+def rakuten_search(xxx):
+    xxx = xxx.replace(" ", "+")  # スペースを+に置換
+    base_url = f'<a rel="nofollow" href="https://search.rakuten.co.jp/search/mall/{xxx}/" automate_uuid="0d65ad2e-2c1f-42fa-bd6b-770a5da511fd" data-nodal="">サイトを見る</a>'
+    return base_url
+
+
+# Yahoo!
+def yahoo_search(xxx):
+    xxx = xxx.replace(" ", "+")  # スペースを+に置換
+    suffix = "&sc_i=shp_pc__searchBox&area=11"
+    base_url = f'<a href="https://shopping.yahoo.co.jp/search?first=1&tab_ex=commerce&fr=shp-prop&mcr=16ce063bd8359bdabe7e46ba148bf218&ts=1666874543&sretry=1&p={xxx}{suffix}" rel="nofollow" automate_uuid="17295db3-ed57-461e-8da9-cf114fb960d0" data-nodal="">サイトを見る</a>'
+    return base_url
+
+
+# google
+def google_search(xxx):
+    xxx = xxx.replace(" ", "+")  # スペースを+に置換
+    base_url = f'<a href="https://scholar.google.co.jp/scholar?hl=ja&as_sdt=0%2C5&q={xxx}&btnG=" automate_uuid="b3b85ab3-87b3-4b18-be11-957952436ce1" data-nodal="">論文を見る</a>'
+    return base_url
+
+
+# cinii
+def cinii_search(xxx):
+    xxx = xxx.replace(" ", "+")  # スペースを+に置換
+    base_url = f'<a href="https://ci.nii.ac.jp/search?q={xxx}" automate_uuid="10ade5da-f2ac-460a-bfda-6c521f1e3fe2" data-nodal="">論文を見る</a>'
+    return base_url
+
+
+# jstage
+def jstage_search(xxx):
+    xxx = xxx.replace(" ", "+")  # スペースを+に置換
+    base_url = f'<a href="https://www.jstage.jst.go.jp/result/global/-char/ja?globalSearchKey={xxx}" automate_uuid="d7c9d5f5-b6ec-40f4-a5c2-0f7cd4046d72" data-nodal="">論文を見る</a>'
+    return base_url
+
+
+# IRDB
+def IRDB_search(xxx):
+    xxx = xxx.replace(" ", "+")  # スペースを+に置換
+    base_url = f'<a href="https://irdb.nii.ac.jp/search?kywd={xxx}&op=%E6%A4%9C%E7%B4%A2&fulltextflg=All&title=&description=&creator=&creatoraf=&creatorid=&publisher=&journal=&pubdate=&open_volume=&open_issue=&open_spage=&open_epage=&doi=&id=&typeid=&versiontypeid=&fundaf=&diaf=&dino=&kikanid=&items_per_page=20&sort=ss_record%2Bdesc" automate_uuid="6b415cab-69da-48cd-96b6-0dc3fbf3a825" data-nodal="">論文を見る</a>'
+    return base_url
+
+
+
 # ------------ループ処理----------------
 
 def delete_sections(html_template):
@@ -489,6 +540,7 @@ def copy_to_clipboard():
     text_widget.clipboard_clear()
     text_widget.clipboard_append(selected_text)
     text_widget.tag_remove(tk.SEL, "1.0", tk.END)
+    result_label.config(text="コピーされました！")
 
 # Tkinterウィンドウを作成
 root = tk.Tk()
