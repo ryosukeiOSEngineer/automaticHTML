@@ -227,7 +227,7 @@ def define_3_tag(df):
             cleaned_item = str(item).replace(',', '').replace('、', '').replace('.', '').replace('。', '').replace('\n', '') # いらない文字を何も無しに置換して削除
             csv_split_list.append(cleaned_item) # リストから要らない文字を消したものをリストに追加
         csv_list_customize = [
-            f'<li class="c-tabList__item" role="presentation"><button role="tab" class="c-tabList__button" aria-selected="true" aria-controls="tab-6deac381-{index}" data-onclick="tabControl">{item}</button></li>' 
+            f'<li class="c-tabList__item" role="presentation"><button role="tab" class="c-tabList__button" aria-selected={"true" if index == 0 else "false"} aria-controls="tab-6deac381-{index}" data-onclick="tabControl">{item}</button></li>' 
             for index, item in enumerate(csv_split_list) if item
         ]
 
@@ -259,46 +259,26 @@ def replace_3_tag(html_template, df):
 
 
 # <!-- 3-TEMPLATE_START -->
-def html_3_comment_index_generate(df):
+def html_3_comment_index_generate(html_template, df):
     try:
         index_count = len(df)
 
-        new_template_parts_list = []
+        new_template_parts_list = [
+            f'''<!-- 3-{index}-REPLACE_START --><div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden="false"><div class="swell-block-balloon"><div class="c-balloon -bln-left" data-col="yellow"><!-- 3-icon-{index} --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px"></div><div class="c-balloon__body -speaking -border-none"><!-- 3-comment-{index} --><div class="c-balloon__text">\n<p>体内の活性化</p>\n<span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div></div></div></div>\n\n<!-- 3-P-TAG-{index} -->\n<p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-{index}-REPLACE_END -->\n'''
+            for index in range(index_count)
+        ]
+        
+        # すべての新しいセクションを一つの文字列に連結
+        html_insert_3_comment_index = ''.join(new_template_parts_list)
 
-        for index in range(index_count):
-            customized_template = f'''
-            <div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden="false">
-                <div class="swell-block-balloon">
-                    <div class="c-balloon -bln-left" data-col="yellow">
-                        <!-- 3-icon-{index} -->
-                        <div class="c-balloon__icon -circle">
-                            <img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px">
-                        </div>
-                        <div class="c-balloon__body -speaking -border-none">
-                            <!-- 3-comment-{index} -->
-                            <div class="c-balloon__text">
-                                <p>体内の活性化</p>
-                                <span class="c-balloon__shapes">
-                                    <span class="c-balloon__before"></span>
-                                    <span class="c-balloon__after"></span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 3-P-TAG-{index} -->
-                <p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p>
-            '''
-        new_template_parts_list.append(customized_template)
+        print(html_insert_3_comment_index)
 
-
-        updated_html_3_comment = re.sub(r'<!-- 3-TEMPLATE_START -->(.*?)<!-- 3-TEMPLATE_END -->', lambda x: new_template_parts_list.pop(0), html_template, flags=re.DOTALL)
-
-        # print(updated_html_3_comment)
+        # 連結した文字列をHTMLテンプレートと置換
+        updated_html_3_comment = re.sub(r'<!-- 3-TEMPLATE_START -->(.*?)<!-- 3-TEMPLATE_END -->', html_insert_3_comment_index, html_template, flags=re.DOTALL)
+        
         return updated_html_3_comment
     except Exception as e: # もし失敗したら
-        print(f"3-TAGの置換生成に失敗しました: {e}")
+        print(f"3_comment_indexの置換生成に失敗しました: {e}")
         return None
 
 
@@ -311,14 +291,10 @@ def replace_3_comment(html_template, df):
     if html_insert is None:
         print("置換に失敗しました。")
         return html_template
-    
-    # コメントタグの直後の p タグを置換する正規表現パターン
-    pattern = r'(<!-- 3-TEMPLATE_START -->\s*<div id="tab-6deac381-0" class="c-tabBody__item" aria-hidden="false">).*?(<!-- 3-TEMPLATE_END -->)'
 
-    updated_html_part_3_comment = re.sub(pattern, html_insert, html_template, flags=re.DOTALL)
+    print("3_comment_indexの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
 
-    print("3-TAGの置換が成功しました。")
-    return updated_html_part_3_comment
 
 
 # <!-- 4-RED -->
