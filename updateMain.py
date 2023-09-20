@@ -259,6 +259,7 @@ def replace_3_tag(html_template, df):
 
 
 # <!-- 3-TEMPLATE_START -->
+# 置換を定義する関数
 def html_3_comment_index_generate(html_template, df):
     try:
         index_count = len(df)
@@ -271,7 +272,6 @@ def html_3_comment_index_generate(html_template, df):
         # すべての新しいセクションを一つの文字列に連結
         html_insert_3_comment_index = ''.join(new_template_parts_list)
 
-        print(html_insert_3_comment_index)
 
         # 連結した文字列をHTMLテンプレートと置換
         updated_html_3_comment = re.sub(r'<!-- 3-TEMPLATE_START -->(.*?)<!-- 3-TEMPLATE_END -->', html_insert_3_comment_index, html_template, flags=re.DOTALL)
@@ -281,7 +281,7 @@ def html_3_comment_index_generate(html_template, df):
         print(f"3_comment_indexの置換生成に失敗しました: {e}")
         return None
 
-
+# ファイルを読み込んで置換を実施する関数定義
 def replace_3_comment(html_template, df): 
     if df is None: # ファイルデータが読み込まれたか確認
         print("データフレームのロードに失敗しました。")
@@ -295,6 +295,56 @@ def replace_3_comment(html_template, df):
     print("3_comment_indexの置換が成功しました。")
     return html_insert # この行で更新されたHTMLテンプレートを返す
 
+
+# <!-- 3-icon-{index} -->
+# 置換を定義する関数
+def define_3_icon_index(df,index): 
+    # 性別の数値を文字列に変換
+    gender_mapping = {
+        '1': '男性',
+        '2': '女性'
+    }
+    gender_value = df.loc[index, '2. 回答者様の性別を教えて下さい']
+    gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
+
+    age_group_value = df.loc[index, '3. 回答者様の年齢を教えて下さい']
+
+    # 年齢層を40代以上と40代未満に分ける
+    age_40_or_above = int(age_group_value) >= 4
+
+    if gender == '男性':
+        if age_40_or_above:
+            image_file = 'タブ男性2アイコン.webp'
+        else:
+            image_file = 'タブ男性アイコン.webp'
+    else:
+        if age_40_or_above:
+            image_file = 'タブ女性2アイコン.webp'
+        else:
+            image_file = 'タブ女性アイコン.webp'
+
+    return image_file
+
+    # image_fileを<!-- 3-icon-{index} -->へと置換する
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_3_icon_index(html_template, df): 
+    # DataFrameの各行に対してループを行う
+    for index in df.index:
+        # アイコンのファイル名を取得
+        image_file = define_3_icon_index(df, index)
+
+        # HTMLテンプレート内の適切なマークアップをアイコンのHTMLタグに置き換える
+        placeholder_3_icon = f'<!-- 3-icon-{index} -->'
+        img_tag = f'<img src="{image_file}">'
+        html_template = html_template.replace(placeholder_3_icon, img_tag)
+    # 置換が成功したかどうかを確認
+    if "<!-- 3-icon-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
+        print("置換に失敗しました。")
+        return html_template
+
+    print("2-REDの置換が成功しました。")
+    return html_template
 
 
 # <!-- 4-RED -->
@@ -489,6 +539,7 @@ def replace_sections(html_template, df):
     html_template = replace_2_red(html_template, df)
     html_template = replace_3_tag(html_template, df)
     html_template = replace_3_comment(html_template, df)
+    html_template = replace_3_icon_index(html_template, df)
     html_template = replace_4_red(html_template, df)
     html_template = replace_4_blue(html_template, df)
     html_template = replace_7_red(html_template, df)
