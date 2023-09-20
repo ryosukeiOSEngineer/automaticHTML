@@ -265,7 +265,7 @@ def html_3_comment_index_generate(html_template, df):
         index_count = len(df)
 
         new_template_parts_list = [
-            f'''<!-- 3-{index}-REPLACE_START --><div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden="false"><div class="swell-block-balloon"><div class="c-balloon -bln-left" data-col="yellow"><!-- 3-icon-{index} --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px"></div><div class="c-balloon__body -speaking -border-none"><!-- 3-comment-{index} --><div class="c-balloon__text">\n<p>体内の活性化</p>\n<span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div></div></div></div>\n\n<!-- 3-P-TAG-{index} -->\n<p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-{index}-REPLACE_END -->\n'''
+            f'''<div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden="false"><div class="swell-block-balloon"><div class="c-balloon -bln-left" data-col="yellow"><!-- 3-ICON-START-{index} --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px"><!-- 3-ICON-END-{index} --></div><div class="c-balloon__body -speaking -border-none"><div class="c-balloon__text">\n<!-- 3-COMMENT-START-{index} --><p>体内の活性化</p><!-- 3-COMMENT-END-{index} -->\n<span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div></div></div></div>\n\n<!-- 3-PTAG-START-{index} -->\n<p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-PTAG-END-{index} -->\n'''
             for index in range(index_count)
         ]
         
@@ -296,7 +296,7 @@ def replace_3_comment(html_template, df):
     return html_insert # この行で更新されたHTMLテンプレートを返す
 
 
-# <!-- 3-icon-{index} -->
+# <!-- 3-ICON-START-{index} -->
 # 置換を定義する関数
 def define_3_icon_index(df,index): 
     # 性別の数値を文字列に変換
@@ -334,16 +334,17 @@ def replace_3_icon_index(html_template, df):
         # アイコンのファイル名を取得
         image_file = define_3_icon_index(df, index)
 
-        # HTMLテンプレート内の適切なマークアップをアイコンのHTMLタグに置き換える
-        placeholder_3_icon = f'<!-- 3-icon-{index} -->'
-        img_tag = f'<img src="{image_file}">'
-        html_template = html_template.replace(placeholder_3_icon, img_tag)
+        replace_3_comment_index = f'<div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="{image_file}" alt="" class="c-balloon__iconImg" width="80px" height="80px">'
+
+
+        html_template = re.sub(r'<!-- 3-ICON-START-{index} -->(.*?)<!-- 3-ICON-END-{index} -->', replace_3_comment_index, html_template, flags=re.DOTALL)
+        
     # 置換が成功したかどうかを確認
-    if "<!-- 3-icon-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
+    if "<!-- 3-ICON-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
         print("置換に失敗しました。")
         return html_template
 
-    print("2-REDの置換が成功しました。")
+    print("3-ICONの置換が成功しました。")
     return html_template
 
 
