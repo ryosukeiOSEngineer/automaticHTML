@@ -336,15 +336,53 @@ def replace_3_icon_index(html_template, df):
 
         replace_3_comment_index = f'<div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="{image_file}" alt="" class="c-balloon__iconImg" width="80px" height="80px">'
 
+        # placeholder = fr'<!-- 3-ICON-START-{index} -->(.*?)<!-- 3-ICON-END-{index} -->'
+        # if re.search(placeholder, html_template):
+        #     print(f"Placeholder found for index {index}")
+        # else:
+        #     print(f"Placeholder not found for index {index}")
 
-        html_template = re.sub(r'<!-- 3-ICON-START-{index} -->(.*?)<!-- 3-ICON-END-{index} -->', replace_3_comment_index, html_template, flags=re.DOTALL)
+        html_template = re.sub(fr'<!-- 3-ICON-START-{index} -->(.*?)<!-- 3-ICON-END-{index} -->', replace_3_comment_index, html_template, flags=re.DOTALL)
         
+        
+
+
     # 置換が成功したかどうかを確認
     if "<!-- 3-ICON-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
         print("置換に失敗しました。")
         return html_template
 
     print("3-ICONの置換が成功しました。")
+    return html_template
+
+# <!-- 3-COMMENT-START-{index} -->
+# 置換を定義する関数
+def define_3_comment_index(df): 
+    csv_data_3_comment = df.loc[0, '7. 前問で答えた内容を「一言」で言い表してください']
+    csv_split_list = re.split('、|。|\n', csv_data_3_comment)
+    html_insert_1_red = f'<p>{csv_split_list}</p>'
+    return html_insert_1_red
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_3_comment_index(html_template, df): 
+    # DataFrameの各行に対してループを行う
+    for index in df.index:
+        placeholder = fr'<!-- 3-COMMENT-START-{index} -->(.*?)<!-- 3-COMMENT-END-{index} -->'
+        print(placeholder)
+        
+        # ここで置換用の文字列を取得
+        replace_text = define_3_comment_index(df)
+        
+        # 置換用の文字列をre.subに渡す
+        html_template = re.sub(placeholder, replace_text, html_template, flags=re.DOTALL)
+
+    # 置換が成功したかどうかを確認
+    if "<!-- 3-COMMENT-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
+        print("置換に失敗しました。")
+        return html_template
+
+    print("3-COMMENTの置換が成功しました。")
     return html_template
 
 
@@ -541,6 +579,7 @@ def replace_sections(html_template, df):
     html_template = replace_3_tag(html_template, df)
     html_template = replace_3_comment(html_template, df)
     html_template = replace_3_icon_index(html_template, df)
+    html_template = replace_3_comment_index(html_template, df)
     html_template = replace_4_red(html_template, df)
     html_template = replace_4_blue(html_template, df)
     html_template = replace_7_red(html_template, df)
