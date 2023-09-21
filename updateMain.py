@@ -357,33 +357,31 @@ def replace_3_icon_index(html_template, df):
 
 # <!-- 3-COMMENT-START-{index} -->
 # 置換を定義する関数
-def define_3_comment_index(df): 
-    csv_data_3_comment = df.loc[0, '7. 前問で答えた内容を「一言」で言い表してください']
-    csv_split_list = re.split('、|。|\n', csv_data_3_comment)
-    html_insert_1_red = f'<p>{csv_split_list}</p>'
-    return html_insert_1_red
+def define_3_comment_index(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_3_comment = row['7. 前問で答えた内容を「一言」で言い表してください']
+        cleaned_comment = re.sub('、|。|\n', '', csv_data_3_comment)  # デリミタでクリーニング
+        
+        pattern = f"<!-- 3-COMMENT-START-{index} --><p>(.*?)</p><!-- 3-COMMENT-END-{index} -->"
+        replacement = f"<!-- 3-COMMENT-START-{index} --><p>{cleaned_comment}</p><!-- 3-COMMENT-END-{index} -->"
+        updated_html = re.sub(pattern, replacement, updated_html)
+    return updated_html
 
 
 # ファイルを読み込んで置換を実施する関数定義
-def replace_3_comment_index(html_template, df): 
-    # DataFrameの各行に対してループを行う
-    for index in df.index:
-        placeholder = fr'<!-- 3-COMMENT-START-{index} -->(.*?)<!-- 3-COMMENT-END-{index} -->'
-        print(placeholder)
-        
-        # ここで置換用の文字列を取得
-        replace_text = define_3_comment_index(df)
-        
-        # 置換用の文字列をre.subに渡す
-        html_template = re.sub(placeholder, replace_text, html_template, flags=re.DOTALL)
-
-    # 置換が成功したかどうかを確認
-    if "<!-- 3-COMMENT-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
+def replace_3_comment_index(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_3_comment_index(html_template, df)
+    if html_insert is None:
         print("置換に失敗しました。")
         return html_template
 
-    print("3-COMMENTの置換が成功しました。")
-    return html_template
+    print("3_comment_indexの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
 
 
 # <!-- 4-RED -->
