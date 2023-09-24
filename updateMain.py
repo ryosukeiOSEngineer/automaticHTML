@@ -494,6 +494,80 @@ def replace_4_blue(html_template, df):
     return updated_html_part_4_blue
 
 
+# <!-- 5-TEMPLATE_START -->
+# 置換を定義する関数
+def html_5_comment_index_generate(html_template, df):
+    try:
+        index_count = len(df)
+
+        new_template_parts_list = [
+            f'''<!-- 5-TEMPLATE-{index} -->
+              <div class="wp-block-column">
+                <div class="wp-block-group is-style-bg_grid">
+                  <div class="wp-block-group__inner-container">
+                    <div class="wp-block-columns is-not-stacked-on-mobile">
+                      <div class="wp-block-column" style="flex-basis:33.33%">
+                        <figure class="wp-block-image size-full is-resized"><!-- 5-ICON-{index} --><img decoding="async" loading="lazy"
+                            src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt=""
+                            class="wp-image-13148 luminous" style="width:90px;height:300px" width="90" height="300"
+                            data-luminous="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png"></figure>
+                      </div>
+
+
+                      <!-- 5-PERIOD-{index} -->
+                      <div class="wp-block-column" style="flex-basis:66.66%">
+                        <p>期間：1ヵ月未満<br>満足度：<span class="swl-format-1">満足（意味があった）</span></p>
+
+
+                        <!-- 5-AGE_GENDER-{index} -->
+                        <p class="has-text-align-right">40代・女性</p>
+                      </div>
+                    </div>
+
+
+                    <!-- 5-COMMENT1-{index} -->
+                    <p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00"
+                        class="has-inline-color">肌がツヤツヤになりました。</mark></p>
+
+
+                    <!-- 5-COMMENT2-{index} -->
+                    <p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00"
+                        class="has-inline-color">便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。</mark>
+                    </p>
+                  </div>
+                </div>
+              </div>'''
+            for index in range(index_count)
+        ]
+        
+        # すべての新しいセクションを一つの文字列に連結
+        html_insert_5_comment_index = ''.join(new_template_parts_list)
+
+
+        # 連結した文字列をHTMLテンプレートと置換
+        updated_html_5_comment = re.sub(r'<!-- 5-TEMPLATE_START -->(.*?)<!-- 5-TEMPLATE_END -->', html_insert_5_comment_index, html_template, flags=re.DOTALL)
+        
+        return updated_html_5_comment
+    except Exception as e: # もし失敗したら
+        print(f"5_comment_indexの置換生成に失敗しました: {e}")
+        return None
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_5_comment(html_template, df): 
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = html_5_comment_index_generate(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("5_comment_indexの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+
 # <!-- 7-RED -->
 # 置換を定義する関数
 def define_7_red(df): 
@@ -605,7 +679,7 @@ def delete_sections(html_template):
     html_template = deleteSection3_1(html_template)
     html_template = deleteSection3_2(html_template)
     html_template = deleteSection3_lastptag(html_template)
-    # html_template = deleteSection5_1(html_template)
+    html_template = deleteSection5_1(html_template)
     html_template = deleteSection6_1(html_template)
     return html_template
 
@@ -622,6 +696,7 @@ def replace_sections(html_template, df):
     html_template = replace_3_ptag_index(html_template, df)
     html_template = replace_4_red(html_template, df)
     html_template = replace_4_blue(html_template, df)
+    html_template = replace_5_comment(html_template, df)
     html_template = replace_7_red(html_template, df)
     html_template = replace_7_blue(html_template, df)
     html_template = replace_8_red(html_template, df)
