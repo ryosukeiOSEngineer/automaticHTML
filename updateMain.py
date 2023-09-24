@@ -351,8 +351,6 @@ def replace_3_icon_index(html_template, df):
         html_template = re.sub(fr'<!-- 3-ICON-START-{index} -->(.*?)<!-- 3-ICON-END-{index} -->', replace_3_comment_index, html_template, flags=re.DOTALL)
         
         
-
-
     # 置換が成功したかどうかを確認
     if "<!-- 3-ICON-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
         print("置換に失敗しました。")
@@ -420,8 +418,6 @@ def replace_3_ptag_index(html_template, df):
 
     print("3-PTAGの置換が成功しました。")
     return html_insert # この行で更新されたHTMLテンプレートを返す
-
-
 
 
 # <!-- 4-RED -->
@@ -507,32 +503,28 @@ def html_5_comment_index_generate(html_template, df):
                   <div class="wp-block-group__inner-container">
                     <div class="wp-block-columns is-not-stacked-on-mobile">
                       <div class="wp-block-column" style="flex-basis:33.33%">
-                        <figure class="wp-block-image size-full is-resized"><!-- 5-ICON-{index} --><img decoding="async" loading="lazy"
+                        <figure class="wp-block-image size-full is-resized"><!-- 5-{index}-ICON-START --><img decoding="async" loading="lazy"
                             src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt=""
-                            class="wp-image-13148 luminous" style="width:90px;height:300px" width="90" height="300"
-                            data-luminous="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png"></figure>
+                            class="wp-image-13148 luminous" style="width:90px;height:90px" width="300" height="300"
+                            data-luminous="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png"><!-- 5-{index}-ICON-END --></figure>
                       </div>
 
 
-                      <!-- 5-PERIOD-{index} -->
+                      
                       <div class="wp-block-column" style="flex-basis:66.66%">
-                        <p>期間：1ヵ月未満<br>満足度：<span class="swl-format-1">満足（意味があった）</span></p>
+                        <p>期間：<!-- 5-{index}-PERIOD-START -->1ヵ月未満<!-- 5-{index}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p>
 
 
-                        <!-- 5-AGE_GENDER-{index} -->
-                        <p class="has-text-align-right">40代・女性</p>
+                        <p class="has-text-align-right"><!-- 5-{index}-AGE-START -->40代<!-- 5-{index}-AGE-END -->・<!-- 5-{index}-GENDER-START -->女性<!-- 5-{index}-GENDER-END --></p>
                       </div>
                     </div>
 
 
-                    <!-- 5-COMMENT1-{index} -->
                     <p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00"
-                        class="has-inline-color">肌がツヤツヤになりました。</mark></p>
+                        class="has-inline-color"><!-- 5-{index}-COMMENT1-START -->肌がツヤツヤになりました。<!-- 5-{index}-COMMENT1-END --></mark></p>
 
-
-                    <!-- 5-COMMENT2-{index} -->
                     <p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00"
-                        class="has-inline-color">便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。</mark>
+                        class="has-inline-color"><!-- 5-{index}-COMMENT2-START -->便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。<!-- 5-{index}-COMMENT2-END --></mark>
                     </p>
                   </div>
                 </div>
@@ -565,6 +557,225 @@ def replace_5_comment(html_template, df):
 
     print("5_comment_indexの置換が成功しました。")
     return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+# <!-- 5-ICON-START-{index} -->
+# 置換を定義する関数
+def define_5_icon_index(df,index): 
+    # 性別の数値を文字列に変換
+    gender_mapping = {
+        '1': '男性',
+        '2': '女性'
+    }
+    gender_value = df.loc[index, '2. 回答者様の性別を教えて下さい']
+    gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
+
+    if gender == '男性':
+        image_file = 'https://iminain.com/wp-content/uploads/2023/06/men-touka-2.png'
+    else:
+        image_file = 'https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png'
+
+    return image_file
+
+    # image_fileを5-icon-{index}へと置換する
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_5_icon_index(html_template, df): 
+    # DataFrameの各行に対してループを行う
+    for index in df.index:
+        # アイコンのファイル名を取得
+        image_file = define_5_icon_index(df, index)
+
+        replace_5_comment_index = f'<img decoding="async" loading="lazy"\nsrc="{image_file}" alt=""\nclass="wp-image-13148 luminous" style="width:90px;height:300px" width="90" height="300"\ndata-luminous="{image_file}">'
+
+        # placeholder = fr'<!-- 5-{index}-ICON-START -->(.*?)<!-- 5-{index}-ICON-END -->'
+        # if re.search(placeholder, html_template):
+        #     print(f"Placeholder found for index {index}")
+        # else:
+        #     print(f"Placeholder not found for index {index}")
+
+        html_template = re.sub(fr'<!-- 5-{index}-ICON-START -->(.*?)<!-- 5-{index}-ICON-END -->', replace_5_comment_index, html_template, flags=re.DOTALL)
+        # 置換が成功したかどうかを確認
+    if "<!-- 3-ICON-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
+        print("置換に失敗しました。")
+        return html_template
+
+    print("3-ICONの置換が成功しました。")
+    return html_template
+
+
+# <!-- 5-{index}-PERIOD-START -->
+# 置換を定義する関数
+def define_5_period(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_5_period = row[11]
+
+        pattern = f"<!-- 5-{index}-PERIOD-START -->(.*?)<!-- 5-{index}-PERIOD-END -->"
+        replacement = f"<!-- 5-{index}-PERIOD-START -->{csv_data_5_period}<!-- 5-{index}-PERIOD-END -->"
+        updated_html = re.sub(pattern, replacement, updated_html)
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_5_period(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_5_period(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("5_periodの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+# <!-- 5-{index}-SATISFACTION-START -->
+# 置換を定義する関数
+def define_5_satisfaction(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_5_period = row[9]
+
+        pattern = f"<!-- 5-{index}-SATISFACTION-START -->(.*?)<!-- 5-{index}-SATISFACTION-END -->"
+        replacement = f"<!-- 5-{index}-SATISFACTION-START -->{csv_data_5_period}<!-- 5-{index}-SATISFACTION-END -->"
+        updated_html = re.sub(pattern, replacement, updated_html)
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_5_satisfaction(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_5_satisfaction(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("5_satisfactionの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+# <!-- 5-{index}-AGE-START -->
+# 置換を定義する関数
+def define_5_age(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_5_age = row[7]
+
+        pattern = f"<!-- 5-{index}-AGE-START -->(.*?)<!-- 5-{index}-AGE-END -->"
+        replacement = f"<!-- 5-{index}-AGE-START -->{csv_data_5_age}<!-- 5-{index}-AGE-END -->"
+        updated_html = re.sub(pattern, replacement, updated_html)
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_5_age(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_5_age(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("5_ageの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+# <!-- 5-{index}-GENDER-START -->
+# 置換を定義する関数
+def define_5_gender(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_5_gender = row[5]
+
+        pattern = f"<!-- 5-{index}-GENDER-START -->(.*?)<!-- 5-{index}-GENDER-END -->"
+        replacement = f"<!-- 5-{index}-GENDER-START -->{csv_data_5_gender}<!-- 5-{index}-GENDER-END -->"
+        updated_html = re.sub(pattern, replacement, updated_html)
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_5_gender(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_5_gender(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("5_genderの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+# <!-- 5-{index}-COMMENT1-START -->
+# 置換を定義する関数
+def define_5_comment1(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_5_comment = row['12. 水素水を使ったことで何か変わりましたか？']
+        first_sentence = csv_data_5_comment.split('。')[0] + '。'
+
+        pattern = f"<!-- 5-{index}-COMMENT1-START -->(.*?)<!-- 5-{index}-COMMENT1-END -->"
+        replacement = f"<!-- 5-{index}-COMMENT1-START -->{first_sentence}<!-- 5-{index}-COMMENT1-END -->"
+        updated_html = re.sub(pattern, replacement, updated_html)
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_5_comment1(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_5_comment1(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("5_comment1の置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+
+# <!-- 5-{index}-COMMENT2-START -->
+# 置換を定義する関数
+def define_5_comment2(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_5_comment = row['12. 水素水を使ったことで何か変わりましたか？']
+        next_sentence_list = csv_data_5_comment.split('。')[1:] + '。'
+        next_sentence = ''.join(next_sentence_list)
+
+        pattern = f"<!-- 5-{index}-COMMENT2-START -->(.*?)<!-- 5-{index}-COMMENT2-END -->"
+        replacement = f"<!-- 5-{index}-COMMENT2-START -->{next_sentence}<!-- 5-{index}-COMMENT2-END -->"
+        updated_html = re.sub(pattern, replacement, updated_html)
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_5_comment2(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_5_comment2(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("5_comment2の置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
 
 
 
@@ -680,7 +891,7 @@ def delete_sections(html_template):
     html_template = deleteSection3_2(html_template)
     html_template = deleteSection3_lastptag(html_template)
     html_template = deleteSection5_1(html_template)
-    html_template = deleteSection6_1(html_template)
+    # html_template = deleteSection6_1(html_template)
     return html_template
 
 # 置換実行処理
@@ -697,6 +908,13 @@ def replace_sections(html_template, df):
     html_template = replace_4_red(html_template, df)
     html_template = replace_4_blue(html_template, df)
     html_template = replace_5_comment(html_template, df)
+    html_template = replace_5_icon_index(html_template, df)
+    html_template = replace_5_period(html_template, df)
+    html_template = replace_5_satisfaction(html_template, df)
+    html_template = replace_5_comment1(html_template, df)
+    html_template = replace_5_comment2(html_template, df)
+    html_template = replace_5_age(html_template, df)
+    html_template = replace_5_gender(html_template, df)
     html_template = replace_7_red(html_template, df)
     html_template = replace_7_blue(html_template, df)
     html_template = replace_8_red(html_template, df)
