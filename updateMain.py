@@ -61,6 +61,12 @@ def deleteSection3_2(html_template, start_marker="<!-- 3-2_DELETE_START -->", en
     return re.sub(deleted_part3_2, '', html_template, flags=re.DOTALL)
 
 
+# 3-最終のpタグ 削除
+def deleteSection3_lastptag(html_template, start_marker="<!-- 3-LASTPTAG-DELETE-START -->", end_marker="<!-- 3-LASTPTAG-DELETE-END -->"):
+    deleted_part3_2 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
+    return re.sub(deleted_part3_2, '', html_template, flags=re.DOTALL)
+
+
 # 5-1 削除
 def deleteSection5_1(html_template, start_marker="<!-- 5-1_DELETE_START -->", end_marker="<!-- 5-1_DELETE_END -->"):
     deleted_part5_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
@@ -227,7 +233,7 @@ def define_3_tag(df):
             cleaned_item = str(item).replace(',', '').replace('、', '').replace('.', '').replace('。', '').replace('\n', '') # いらない文字を何も無しに置換して削除
             csv_split_list.append(cleaned_item) # リストから要らない文字を消したものをリストに追加
         csv_list_customize = [
-            f'<li class="c-tabList__item" role="presentation"><button role="tab" class="c-tabList__button" aria-selected={"true" if index == 0 else "false"} aria-controls="tab-6deac381-{index}" data-onclick="tabControl">{item}</button></li>' 
+            f"<li class=\"c-tabList__item\" role=\"presentation\"><button role=\"tab\" class=\"c-tabList__button\" aria-selected=\"{'true' if index == 0 else 'false'}\" aria-controls=\"tab-6deac381-{index}\" data-onclick=\"tabControl\">{item}</button></li>" 
             for index, item in enumerate(csv_split_list) if item
         ]
 
@@ -265,7 +271,7 @@ def html_3_comment_index_generate(html_template, df):
         index_count = len(df)
 
         new_template_parts_list = [
-            f'''<div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden="false"><div class="swell-block-balloon"><div class="c-balloon -bln-left" data-col="yellow"><!-- 3-ICON-START-{index} --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px"><!-- 3-ICON-END-{index} --></div><div class="c-balloon__body -speaking -border-none"><div class="c-balloon__text">\n<!-- 3-COMMENT-START-{index} --><p>体内の活性化</p><!-- 3-COMMENT-END-{index} -->\n<span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div></div></div></div>\n\n<!-- 3-PTAG-START-{index} -->\n<p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-PTAG-END-{index} -->\n'''
+            f'''<div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden={'"false"' if index == 0 else '"true"'}><div class="swell-block-balloon"><div class="c-balloon -bln-left" data-col="yellow"><!-- 3-ICON-START-{index} --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px"><!-- 3-ICON-END-{index} --></div><div class="c-balloon__body -speaking -border-none"><div class="c-balloon__text">\n<!-- 3-COMMENT-START-{index} --><p>体内の活性化</p><!-- 3-COMMENT-END-{index} -->\n<span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div></div></div></div>\n\n<!-- 3-PTAG-START-{index} -->\n<p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-PTAG-END-{index} -->\n'''
             for index in range(index_count)
         ]
         
@@ -314,14 +320,14 @@ def define_3_icon_index(df,index):
 
     if gender == '男性':
         if age_40_or_above:
-            image_file = 'タブ男性2アイコン.webp'
+            image_file = 'https://iminain.com/wp-content/uploads/2023/06/men-2-150x150.png'
         else:
-            image_file = 'タブ男性アイコン.webp'
+            image_file = 'https://iminain.com/wp-content/uploads/2023/06/men-1-150x150.png'
     else:
         if age_40_or_above:
-            image_file = 'タブ女性2アイコン.webp'
+            image_file = 'https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png'
         else:
-            image_file = 'タブ女性アイコン.webp'
+            image_file = 'https://iminain.com/wp-content/uploads/2023/06/icon-5-150x150.png'
 
     return image_file
 
@@ -382,6 +388,40 @@ def replace_3_comment_index(html_template, df):
 
     print("3_comment_indexの置換が成功しました。")
     return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+# <!-- 3-PTAG-START-{index} -->
+# 置換を定義する関数
+def define_3_ptag_index(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_3_ptag = row['6. 水素水を全く知らない人に説明してください（客観的に）※感想ではありません']
+        cleaned_3_ptag_list = csv_data_3_ptag.replace('。', '。\n').split('\n')
+
+        # cleaned_3_ptag_listの各要素を<p></p>で囲んで連結
+        cleaned_3_ptag = ''.join([f"<p>{sentence}</p>\n\n" for sentence in cleaned_3_ptag_list if sentence])
+
+        pattern = f"<!-- 3-PTAG-START-{index} -->(.*?)<!-- 3-PTAG-END-{index} -->"
+        replacement = f"<!-- 3-PTAG-START-{index} -->{cleaned_3_ptag}<!-- 3-PTAG-END-{index} --></div>"
+        updated_html = re.sub(pattern, replacement, updated_html, flags=re.DOTALL)
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_3_ptag_index(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_3_ptag_index(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("3-PTAGの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
 
 
 # <!-- 4-RED -->
@@ -564,6 +604,7 @@ def replace_8_red(html_template, df):
 def delete_sections(html_template):
     html_template = deleteSection3_1(html_template)
     html_template = deleteSection3_2(html_template)
+    html_template = deleteSection3_lastptag(html_template)
     # html_template = deleteSection5_1(html_template)
     html_template = deleteSection6_1(html_template)
     return html_template
@@ -578,6 +619,7 @@ def replace_sections(html_template, df):
     html_template = replace_3_comment(html_template, df)
     html_template = replace_3_icon_index(html_template, df)
     html_template = replace_3_comment_index(html_template, df)
+    html_template = replace_3_ptag_index(html_template, df)
     html_template = replace_4_red(html_template, df)
     html_template = replace_4_blue(html_template, df)
     html_template = replace_7_red(html_template, df)
