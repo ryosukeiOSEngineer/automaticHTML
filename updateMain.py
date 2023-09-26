@@ -880,7 +880,6 @@ def define_6_red(html_template, df):
         pattern = f'<!-- 6-{index}-RED-START -->(.*?)<!-- 6-{index}-RED-END -->'
 
         replacement = f'<!-- 6-{index}-RED-START -->{cleaned_comment}<!-- 6-{index}-RED-END -->'
-        print(replacement)
 
         updated_html = re.sub(pattern, replacement, updated_html)
         
@@ -927,6 +926,7 @@ def html_6_blue_template_generate(html_template, df):
               </div>
             </div>
 
+
             <p><!-- 6-BLUE-COMMENT-{index}-START -->色々な商品を試しましたが、体の内側からよくなり、健康を保ちながら、美しくなっていくというのは、この水素水以外は、まだ経験したことがありません。<!-- 6-BLUE-COMMENT-{index}-END --></p>'''
             for index in range(index_count)
         ]
@@ -968,7 +968,6 @@ def define_6_blue_h3(html_template, df):
         pattern = f'<!-- 6-BLUE-H3-{index}-START -->(.*?)<!-- 6-BLUE-H3-{index}-END -->'
 
         replacement = f'<!-- 6-BLUE-H3-{index}-START -->{cleaned_comment}<!-- 6-BLUE-H3-{index}-END -->'
-        print(replacement)
 
         updated_html = re.sub(pattern, replacement, updated_html)
         
@@ -990,10 +989,67 @@ def replace_6_blue_h3(html_template, df):
     return html_insert
 
 # <!-- 6-BLUE-SPEECH-{index}-START -->
+def define_6_blue_speech(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_6_blue_speech = row['9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい']
+        csv_split_list = re.split('。|\n', csv_data_6_blue_speech)
+        first_element = csv_split_list[0]
 
+        pattern = f'<!-- 6-BLUE-SPEECH-{index}-START -->(.*?)<!-- 6-BLUE-SPEECH-{index}-END -->'
+
+        replacement = f'<!-- 6-BLUE-SPEECH-{index}-START -->{first_element}<!-- 6-BLUE-SPEECH-{index}-END -->'
+
+        updated_html = re.sub(pattern, replacement, updated_html)
+        
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_6_blue_speech(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_6_blue_speech(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("6_blue_speechの置換が成功しました。")
+    return html_insert
 
 # <!-- 6-BLUE-COMMENT-{index}-START -->
+def define_6_blue_comment(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_6_blue_comment = row['9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい']
+        csv_split_list = re.split('。|\n', csv_data_6_blue_comment) + ['。']
+        next_elements = csv_split_list[0]
+        join_list = ''.join(next_elements)
 
+        pattern = f'<!-- 6-BLUE-COMMENT-{index}-START -->(.*?)<!-- 6-BLUE-COMMENT-{index}-END -->'
+
+        replacement = f'<!-- 6-BLUE-COMMENT-{index}-START -->{join_list}<!-- 6-BLUE-COMMENT-{index}-END -->'
+
+        updated_html = re.sub(pattern, replacement, updated_html)
+        
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_6_blue_comment(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_6_blue_comment(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("6_blue_commentの置換が成功しました。")
+    return html_insert
 
 # <!-- 7-RED -->
 # 置換を定義する関数
@@ -1136,6 +1192,8 @@ def replace_sections(html_template, df):
     html_template = replace_6_blue_template(html_template, df)
     html_template = replace_6_red(html_template, df)
     html_template = replace_6_blue_h3(html_template, df)
+    html_template = replace_6_blue_speech(html_template, df)
+    html_template = replace_6_blue_comment(html_template, df)
     html_template = replace_7_red(html_template, df)
     html_template = replace_7_blue(html_template, df)
     html_template = replace_8_red(html_template, df)
