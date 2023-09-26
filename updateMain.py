@@ -281,12 +281,12 @@ def html_3_comment_index_generate(html_template, df):
         index_count = len(df)
 
         new_template_parts_list = [
-            f'''<div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden={'"false"' if index == 0 else '"true"'}><div class="swell-block-balloon"><div class="c-balloon -bln-left" data-col="yellow"><!-- 3-ICON-START-{index} --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px"><!-- 3-ICON-END-{index} --></div><div class="c-balloon__body -speaking -border-none"><div class="c-balloon__text">\n<!-- 3-COMMENT-START-{index} --><p>体内の活性化</p><!-- 3-COMMENT-END-{index} -->\n<span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div></div></div></div>\n\n<!-- 3-PTAG-START-{index} -->\n<p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-PTAG-END-{index} -->\n'''
+            f'''<div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden={'"false"' if index == 0 else '"true"'}><div class="swell-block-balloon"><div class="c-balloon -bln-left" data-col="yellow"><!-- 3-ICON-START-{index} --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px"><!-- 3-ICON-END-{index} --></div><div class="c-balloon__body -speaking -border-none"><div class="c-balloon__text"><!-- 3-COMMENT-START-{index} --><p>体内の活性化</p><!-- 3-COMMENT-END-{index} --><span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div></div></div></div><!-- 3-PTAG-START-{index} --><p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-PTAG-END-{index} -->'''
             for index in range(index_count)
         ]
         
         # すべての新しいセクションを一つの文字列に連結
-        html_insert_3_comment_index = ''.join(new_template_parts_list)
+        html_insert_3_comment_index = '\n\n                '.join(new_template_parts_list)
 
 
         # 連結した文字列をHTMLテンプレートと置換
@@ -407,7 +407,7 @@ def define_3_ptag_index(html_template, df):
         cleaned_3_ptag_list = csv_data_3_ptag.replace('。', '。\n').split('\n')
 
         # cleaned_3_ptag_listの各要素を<p></p>で囲んで連結
-        cleaned_3_ptag = ''.join([f"<p>{sentence}</p>\n\n" for sentence in cleaned_3_ptag_list if sentence])
+        cleaned_3_ptag = ''.join([f"\n\n\n                  <p>{sentence}</p>" for sentence in cleaned_3_ptag_list if sentence])
 
         pattern = f"<!-- 3-PTAG-START-{index} -->(.*?)<!-- 3-PTAG-END-{index} -->"
         replacement = f"<!-- 3-PTAG-START-{index} -->{cleaned_3_ptag}<!-- 3-PTAG-END-{index} --></div>"
@@ -437,8 +437,8 @@ def define_4_red(df):
         csv_data_4_red = df.loc[0, '11. 水素水のデメリットを3つ教えてください']
         csv_split_list = re.split('、|。|\n', csv_data_4_red)
         csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
-        csv_split_join = ' '.join(csv_list_customize)
-        html_insert_4_red = f'<p>意味ない理由として{csv_split_join}などのコメントがありました。</p>'
+        csv_split_join = ''.join(csv_list_customize)
+        html_insert_4_red = f'<p>意味ない理由として{csv_split_join}などのコメントがありました。'
         return html_insert_4_red
     except Exception as e: # もし失敗したら
         print(f"4-REDの置換生成に失敗しました: {e}")
@@ -471,10 +471,10 @@ def define_4_blue(df):
         csv_split_list = []
         for item in csv_data_4_blue:
             csv_split_list.extend(re.split('、|。|\n', str(item)))
-        csv_list_customize = ['<li>' + item + '</li>' for item in csv_split_list if item]
+        csv_list_customize = ['                  <li>' + item + '</li>' for item in csv_split_list if item]
         csv_split_join = '\n\n\n\n'.join(csv_list_customize)
         
-        html_insert_4_blue = f'<ul class="is-style-triangle_list">\n{csv_split_join}\n</ul>'
+        html_insert_4_blue = f'<ul class="is-style-triangle_list">\n{csv_split_join}\n                </ul>'
         return html_insert_4_blue
     except Exception as e: # もし失敗したら
         print(f"4-BLUEの置換生成に失敗しました: {e}")
@@ -507,16 +507,12 @@ def html_5_comment_index_generate(html_template, df):
         half_index_count = len(df) // 2
 
         new_template_parts_list = [
-            f'''<!-- 5-TEMPLATE-{index}-START --><div class="wp-block-columns">
-              <div class="wp-block-column">
+            f'''<!-- 5-TEMPLATE-{index}-START --><div class="wp-block-columns"><div class="wp-block-column">
                 <div class="wp-block-group is-style-bg_grid">
                   <div class="wp-block-group__inner-container">
                     <div class="wp-block-columns is-not-stacked-on-mobile">
                       <div class="wp-block-column" style="flex-basis:33.33%">
-                        <figure class="wp-block-image size-full is-resized"><!-- 5-{index}-ICON-START --><img decoding="async" loading="lazy"
-                            src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt=""
-                            class="wp-image-13148 luminous" style="width:90px;height:300px" width="90" height="300"
-                            data-luminous="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png"><!-- 5-{index}-ICON-END --></figure>
+                        <figure class="wp-block-image size-full is-resized"><!-- 5-{index}-ICON-START --><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148 luminous" style="width:90px;height:300px" width="90" height="300" data-luminous="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png"><!-- 5-{index}-ICON-END --></figure>
                       </div>
 
 
@@ -584,7 +580,7 @@ def html_5_comment_index_generate(html_template, df):
         ]
         
         # すべての新しいセクションを一つの文字列に連結
-        html_insert_5_comment_index = ''.join(new_template_parts_list)
+        html_insert_5_comment_index = '\n\n\n\n'.join(new_template_parts_list)
 
 
         # 連結した文字列をHTMLテンプレートと置換
