@@ -830,6 +830,45 @@ def replace_5_comment2(html_template, df):
     return html_insert # この行で更新されたHTMLテンプレートを返す
 
 
+# <!-- 6-TEMPLATE_START -->
+# 置換を定義する関数
+def html_6_red_template_generate(html_template, df):
+    try:
+        index_count = len(df)
+
+        new_template_parts_list = [
+            f'''<li><a href="#kouka-{index+1}" automate_uuid="{generate_uuid()}"
+                      data-nodal=""><!-- 6-{index}-RED-START -->簡単に綺麗を保てる<!-- 6-{index}-RED-END --></a></li>'''
+            for index in range(index_count)
+        ]
+        
+        # すべての新しいセクションを一つの文字列に連結
+        html_insert_6_red_template = '\n\n\n\n                  '.join(new_template_parts_list)
+
+        # 連結した文字列をHTMLテンプレートと置換
+        updated_html_6_red_template = re.sub(r'<!-- 6-RED-TEMPLATE-START -->(.*?)<!-- 6-RED-TEMPLATE-END -->', html_insert_6_red_template, html_template, flags=re.DOTALL)
+        
+        return updated_html_6_red_template
+    except Exception as e: # もし失敗したら
+        print(f"6_red_indexの置換生成に失敗しました: {e}")
+        return None
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_6_red_template(html_template, df): 
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = html_6_red_template_generate(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("6_red_templateの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+
 # <!-- 6-RED -->
 # 置換を定義する関数
 def define_6_red(html_template, df):
@@ -838,31 +877,12 @@ def define_6_red(html_template, df):
         csv_data_6_red = row['10. 前問で答えた体験談のメリットを「一言」で言い表してください']
         cleaned_comment = re.sub('、|。|\n', '', csv_data_6_red)  # デリミタでクリーニング
 
-        pattern = f'<!-- 6-{index}-RED-START -->\s*<li>\s*<a href="#kouka-{index+1}"\s+automate_uuid="[^"]+"\s+data-nodal="[^"]*">\s*[^<]*\s*</a>\s*</li>\s*<!-- 6-RED-END-{index} -->'
+        pattern = f'<!-- 6-{index}-RED-START -->(.*?)<!-- 6-{index}-RED-END -->'
 
-        replacement = f'<li><a href="#kouka-{index+1}" automate_uuid="{generate_uuid()}" \ndata-nodal="">{cleaned_comment}</a></li>'
+        replacement = f'<!-- 6-{index}-RED-START -->{cleaned_comment}<!-- 6-{index}-RED-END -->'
+        print(replacement)
 
-        print(f"Index: {index}")
-        print("Pattern:", pattern)
-        print("Replacement:", replacement)
-
-        if index == 2 or index == 3:
-            debug_pattern = f'<!-- 6-{index}-RED-START -->(.*?)<!-- 6-RED-END-{index} -->'
-            match = re.search(debug_pattern, updated_html, flags=re.DOTALL)
-            if match:
-                print(f"\nHTML content for index {index}:")
-                print(match.group(1))
-            else:
-                print(f"No HTML content found for index {index}")
-
-
-        updated_html = re.sub(pattern, replacement, updated_html, flags=re.DOTALL)
-
-    match = re.search(pattern, updated_html, flags=re.DOTALL)
-    if match:
-        print("Match found:", match.group())
-    else:
-        print("No match found for pattern:", pattern)
+        updated_html = re.sub(pattern, replacement, updated_html)
         
     return updated_html
 
@@ -1028,6 +1048,7 @@ def replace_sections(html_template, df):
     html_template = replace_5_comment2(html_template, df)
     html_template = replace_5_age(html_template, df)
     html_template = replace_5_gender(html_template, df)
+    html_template = replace_6_red_template(html_template, df)
     html_template = replace_6_red(html_template, df)
     html_template = replace_7_red(html_template, df)
     html_template = replace_7_blue(html_template, df)
