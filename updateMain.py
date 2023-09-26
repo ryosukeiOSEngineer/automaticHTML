@@ -909,7 +909,7 @@ def html_6_blue_template_generate(html_template, df):
         index_count = len(df)
 
         new_template_parts_list = [
-            f'''<h3 class="wp-block-heading" id="kouka-{index}+1"><!-- 6-BLUE-H3-{index}-START -->簡単に綺麗を保てる<!-- 6-BLUE-H3-{index}-END --></h3>
+            f'''<h3 class="wp-block-heading" id="kouka-{index+1}"><!-- 6-BLUE-H3-{index}-START -->簡単に綺麗を保てる<!-- 6-BLUE-H3-{index}-END --></h3>
 
 
             <div class="swell-block-balloon">
@@ -959,7 +959,35 @@ def replace_6_blue_template(html_template, df):
 
 
 # <!-- 6-BLUE-H3-{index}-START -->
+def define_6_blue_h3(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_6_blue_h3 = row['10. 前問で答えた体験談のメリットを「一言」で言い表してください']
+        cleaned_comment = re.sub('、|。|\n', '', csv_data_6_blue_h3)  # デリミタでクリーニング
 
+        pattern = f'<!-- 6-BLUE-H3-{index}-START -->(.*?)<!-- 6-BLUE-H3-{index}-END -->'
+
+        replacement = f'<!-- 6-BLUE-H3-{index}-START -->{cleaned_comment}<!-- 6-BLUE-H3-{index}-END -->'
+        print(replacement)
+
+        updated_html = re.sub(pattern, replacement, updated_html)
+        
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_6_blue_h3(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_6_blue_h3(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("6_blue_h3の置換が成功しました。")
+    return html_insert
 
 # <!-- 6-BLUE-SPEECH-{index}-START -->
 
@@ -1107,6 +1135,7 @@ def replace_sections(html_template, df):
     html_template = replace_6_red_template(html_template, df)
     html_template = replace_6_blue_template(html_template, df)
     html_template = replace_6_red(html_template, df)
+    html_template = replace_6_blue_h3(html_template, df)
     html_template = replace_7_red(html_template, df)
     html_template = replace_7_blue(html_template, df)
     html_template = replace_8_red(html_template, df)
