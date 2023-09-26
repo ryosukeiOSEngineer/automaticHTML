@@ -902,6 +902,62 @@ def replace_6_red(html_template, df):
     return html_insert
 
 
+# <!-- 6-2-TEMPLATE_START -->
+# 置換を定義する関数
+def html_6_blue_template_generate(html_template, df):
+    try:
+        index_count = len(df)
+
+        new_template_parts_list = [
+            f'''<h3 class="wp-block-heading" id="kouka-{index}+1"><!-- 6-BLUE-H3-{index}-START -->簡単に綺麗を保てる<!-- 6-BLUE-H3-{index}-END --></h3>
+
+
+            <div class="swell-block-balloon">
+              <div class="c-balloon -bln-left" data-col="yellow">
+                <div class="c-balloon__icon -circle"><!-- 6-BLUE—ICON-{index}-START --><img decoding="async" loading="lazy"
+                    src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt=""
+                    class="c-balloon__iconImg" width="80px" height="80px"><!-- 6-BLUE-ICON-{index}-END --></div>
+                <div class="c-balloon__body -speaking -border-none">
+                  <div class="c-balloon__text">
+                    <p><!-- 6-BLUE-SPEECH-{index}-START -->とにかく簡単で安く、綺麗になれることです。<!-- 6-BLUE-SPEECH-{index}-END --></p>
+                    <span class="c-balloon__shapes"><span class="c-balloon__before"></span><span
+                        class="c-balloon__after"></span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p><!-- 6-BLUE-COMMENT-{index}-START -->色々な商品を試しましたが、体の内側からよくなり、健康を保ちながら、美しくなっていくというのは、この水素水以外は、まだ経験したことがありません。<!-- 6-BLUE-COMMENT-{index}-END --></p>'''
+            for index in range(index_count)
+        ]
+        
+        # すべての新しいセクションを一つの文字列に連結
+        html_insert_6_blue_template = '\n\n\n\n            '.join(new_template_parts_list)
+
+        # 連結した文字列をHTMLテンプレートと置換
+        updated_html_6_blue_template = re.sub(r'<!-- 6-2-TEMPLATE-START -->(.*?)<!-- 6-2-TEMPLATE-END -->', html_insert_6_blue_template, html_template, flags=re.DOTALL)
+        
+        return updated_html_6_blue_template
+    except Exception as e: # もし失敗したら
+        print(f"6_blue_indexの置換生成に失敗しました: {e}")
+        return None
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_6_blue_template(html_template, df): 
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = html_6_blue_template_generate(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("6_blue_templateの置換が成功しました。")
+    return html_insert # この行で更新されたHTMLテンプレートを返す
+
+
+
 # <!-- 6-BLUE-H3-{index}-START -->
 
 
@@ -1049,6 +1105,7 @@ def replace_sections(html_template, df):
     html_template = replace_5_age(html_template, df)
     html_template = replace_5_gender(html_template, df)
     html_template = replace_6_red_template(html_template, df)
+    html_template = replace_6_blue_template(html_template, df)
     html_template = replace_6_red(html_template, df)
     html_template = replace_7_red(html_template, df)
     html_template = replace_7_blue(html_template, df)
