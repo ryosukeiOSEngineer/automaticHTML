@@ -102,8 +102,8 @@ def define_1_red(df):
         csv_data_1_red = df.loc[0, '8. 水素水のメリットを3つ教えてください']
         csv_split_list = re.split('、|。|\n', csv_data_1_red)
         csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
-        csv_split_join = ' '.join(csv_list_customize)
-        html_insert_1_red = f'<p>XXXは{csv_split_join}などが魅力です。</p>'
+        csv_split_join = ''.join(csv_list_customize)
+        html_insert_1_red = f'<p>XXXは{csv_split_join}などが魅力です。'
         return html_insert_1_red
     except Exception as e: # もし失敗したら
         print(f"1-REDの置換生成に失敗しました: {e}")
@@ -135,8 +135,8 @@ def define_1_blue(df):
         csv_data_1_blue = df.loc[1, '8. 水素水のメリットを3つ教えてください']
         csv_split_list = re.split('、|。|\n', csv_data_1_blue)
         csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
-        csv_split_join = ' '.join(csv_list_customize)
-        html_insert_1_blue = f'<p>意味があるとされるおすすめポイントは{csv_split_join}などがあります。</p>'
+        csv_split_join = ''.join(csv_list_customize)
+        html_insert_1_blue = f'<p>意味があるとされるおすすめポイントは{csv_split_join}などがあります。'
         return html_insert_1_blue
     except Exception as e: # もし失敗したら
         print(f"1-REDの置換生成に失敗しました: {e}")
@@ -169,10 +169,10 @@ def define_1_green(df):
         csv_split_list = []
         for item in csv_data_1_green:
             csv_split_list.extend(re.split('、|。|\n', str(item)))
-        csv_list_customize = ['<li>' + item + '</li>' for item in csv_split_list if item]
+        csv_list_customize = ['              <li>' + item + '</li>' for item in csv_split_list if item]
         csv_split_join = '\n\n\n\n'.join(csv_list_customize)
         
-        html_insert_1_green = f'<ul class="is-style-check_list has-swl-pale-02-background-color has-background">\n{csv_split_join}\n</ul>'
+        html_insert_1_green = f'<ul class="is-style-check_list has-swl-pale-02-background-color has-background">\n{csv_split_join}</ul>'
         return html_insert_1_green
     except Exception as e: # もし失敗したら
         print(f"1-GREENの置換生成に失敗しました: {e}")
@@ -204,10 +204,10 @@ def define_2_red(df):
     try: # もし成功したら
         csv_data_2_red = df.loc[0, '13. どんな人におすすめですか？3つ教えてください']
         csv_split_list = re.split('、|。|\n', csv_data_2_red)
-        csv_list_customize = ['<li>' + item + '</li>' for item in csv_split_list if item]
+        csv_list_customize = ['                  <li>' + item + '</li>' for item in csv_split_list if item]
         csv_split_join = '\n\n\n\n'.join(csv_list_customize)
         
-        html_insert_2_red = f'<ul class="is-style-check_list">\n{csv_split_join}\n</ul>'
+        html_insert_2_red = f'<ul class="is-style-check_list">\n{csv_split_join}</ul>'
         return html_insert_2_red
     except Exception as e: # もし失敗したら
         print(f"2-REDの置換生成に失敗しました: {e}")
@@ -243,11 +243,11 @@ def define_3_tag(df):
             cleaned_item = str(item).replace(',', '').replace('、', '').replace('.', '').replace('。', '').replace('\n', '') # いらない文字を何も無しに置換して削除
             csv_split_list.append(cleaned_item) # リストから要らない文字を消したものをリストに追加
         csv_list_customize = [
-            f"<li class=\"c-tabList__item\" role=\"presentation\"><button role=\"tab\" class=\"c-tabList__button\" aria-selected=\"{'true' if index == 0 else 'false'}\" aria-controls=\"tab-6deac381-{index}\" data-onclick=\"tabControl\">{item}</button></li>" 
+            f"\n              <li class=\"c-tabList__item\" role=\"presentation\"><button role=\"tab\" class=\"c-tabList__button\"\n                    aria-selected=\"{'true' if index == 0 else 'false'}\" aria-controls=\"tab-6deac381-{index}\" data-onclick=\"tabControl\">{item}</button></li>" 
             for index, item in enumerate(csv_split_list) if item
         ]
 
-        html_insert_3_tag = '<ul class="c-tabList" role="tablist">' + ''.join(csv_list_customize) + '</ul>'
+        html_insert_3_tag = '\n              <ul class="c-tabList" role="tablist">' + ''.join(csv_list_customize) + '</ul>'
 
         return html_insert_3_tag
     except Exception as e: # もし失敗したら
@@ -1356,7 +1356,7 @@ empty_label.grid(row=0, column=0, columnspan=3)
 word_label = tk.Label(grid_frame, text='特定ワードを入力: ')
 word_label.grid(row=1, column=0)
 word_entry = tk.Entry(grid_frame)
-word_entry.insert(0, 'xxx')
+word_entry.insert(0, 'XXX')
 word_entry.grid(row=1, column=1)
 
 # ファイル選択エントリとボタン
