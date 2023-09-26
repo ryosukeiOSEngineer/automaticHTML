@@ -913,7 +913,7 @@ def html_6_blue_template_generate(html_template, df):
 
             <div class="swell-block-balloon">
               <div class="c-balloon -bln-left" data-col="yellow">
-                <div class="c-balloon__icon -circle"><!-- 6-BLUE—ICON-{index}-START --><img decoding="async" loading="lazy"
+                <!-- 6-BLUE—ICON-{index}-START --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy"
                     src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt=""
                     class="c-balloon__iconImg" width="80px" height="80px"><!-- 6-BLUE-ICON-{index}-END --></div>
                 <div class="c-balloon__body -speaking -border-none">
@@ -987,6 +987,61 @@ def replace_6_blue_h3(html_template, df):
 
     print("6_blue_h3の置換が成功しました。")
     return html_insert
+
+
+# <!-- 6-BLUE—ICON-{index}-START -->
+# 置換を定義する関数
+def define_6_blue_icon(df,index): 
+    # 性別の数値を文字列に変換
+    gender_mapping = {
+        '1': '男性',
+        '2': '女性'
+    }
+    gender_value = df.loc[index, '2. 回答者様の性別を教えて下さい']
+    gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
+
+    age_group_value = df.loc[index, '3. 回答者様の年齢を教えて下さい']
+
+    # 年齢層を40代以上と40代未満に分ける
+    age_40_or_above = int(age_group_value) >= 4
+
+    if gender == '男性':
+        if age_40_or_above:
+            image_file = 'https://iminain.com/wp-content/uploads/2023/06/men-2-150x150.png'
+        else:
+            image_file = 'https://iminain.com/wp-content/uploads/2023/06/men-1-150x150.png'
+    else:
+        if age_40_or_above:
+            image_file = 'https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png'
+        else:
+            image_file = 'https://iminain.com/wp-content/uploads/2023/06/icon-5-150x150.png'
+
+    return image_file
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_6_blue_icon(html_template, df): 
+    # DataFrameの各行に対してループを行う
+    for index in df.index:
+        # アイコンのファイル名を取得
+        image_file = define_6_blue_icon(df, index)
+
+
+        replace_6_blue_icon = f'<div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="{image_file}" alt="" class="c-balloon__iconImg" width="80px" height="80px">'
+        print(replace_6_blue_icon)
+
+        html_template = re.sub(fr'<!-- 6-BLUE—ICON-{index}-START -->(.*?)<!-- 6-BLUE-ICON-{index}-END -->', replace_6_blue_icon, html_template, flags=re.DOTALL)
+        
+        
+    # 置換が成功したかどうかを確認
+    if "<!-- 6-BLUE—ICON-" in html_template:  # プレースホルダーがまだ存在するかどうかを確認
+        print("置換に失敗しました。")
+        return html_template
+
+    print("6-BLUE—ICONの置換が成功しました。")
+    return html_template
+
+
 
 # <!-- 6-BLUE-SPEECH-{index}-START -->
 def define_6_blue_speech(html_template, df):
@@ -1192,6 +1247,7 @@ def replace_sections(html_template, df):
     html_template = replace_6_blue_template(html_template, df)
     html_template = replace_6_red(html_template, df)
     html_template = replace_6_blue_h3(html_template, df)
+    html_template = replace_6_blue_icon(html_template, df)
     html_template = replace_6_blue_speech(html_template, df)
     html_template = replace_6_blue_comment(html_template, df)
     html_template = replace_7_red(html_template, df)
