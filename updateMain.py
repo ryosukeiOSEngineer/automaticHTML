@@ -4,6 +4,10 @@ os.environ['TK_SILENCE_DEPRECATION'] = '1'
 import tkinter as tk
 from tkinter import filedialog, ttk
 import pandas as pd
+import uuid
+
+def generate_uuid():
+    return str(uuid.uuid4())
 
 # 元々のHTMLの名称変更しやすいように変数化
 HTML_TEMPLATE_FORMAT = 'automatic.html'
@@ -77,6 +81,12 @@ def deleteSection5_1(html_template, start_marker="<!-- 5-1_DELETE_START -->", en
 def deleteSection6_1(html_template, start_marker="<!-- 6-1_DELETE_START -->", end_marker="<!-- 6-1_DELETE_END -->"):
     deleted_part6_1 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
     return re.sub(deleted_part6_1, '', html_template, flags=re.DOTALL)
+
+
+# 6-2 削除    調整必須
+def deleteSection6_2(html_template, start_marker="<!-- 6-2-DELETE_START -->", end_marker="<!-- 6-2-DELETE_END -->"):
+    deleted_part6_2 = re.escape(start_marker) + "(.*?)" + re.escape(end_marker)
+    return re.sub(deleted_part6_2, '', html_template, flags=re.DOTALL)
 
 
 # ------------検索部分の定義----------------
@@ -820,6 +830,65 @@ def replace_5_comment2(html_template, df):
     return html_insert # この行で更新されたHTMLテンプレートを返す
 
 
+# <!-- 6-RED -->
+# 置換を定義する関数
+def define_6_red(html_template, df):
+    updated_html = html_template
+    for index, row in df.iterrows():
+        csv_data_6_red = row['10. 前問で答えた体験談のメリットを「一言」で言い表してください']
+        cleaned_comment = re.sub('、|。|\n', '', csv_data_6_red)  # デリミタでクリーニング
+
+        pattern = f'<!-- 6-{index}-RED-START -->\s*<li>\s*<a href="#kouka-{index+1}"\s+automate_uuid="[^"]+"\s+data-nodal="[^"]*">\s*[^<]*\s*</a>\s*</li>\s*<!-- 6-RED-END-{index} -->'
+
+        replacement = f'<li><a href="#kouka-{index+1}" automate_uuid="{generate_uuid()}" \ndata-nodal="">{cleaned_comment}</a></li>'
+
+        print(f"Index: {index}")
+        print("Pattern:", pattern)
+        print("Replacement:", replacement)
+
+        if index == 2 or index == 3:
+            debug_pattern = f'<!-- 6-{index}-RED-START -->(.*?)<!-- 6-RED-END-{index} -->'
+            match = re.search(debug_pattern, updated_html, flags=re.DOTALL)
+            if match:
+                print(f"\nHTML content for index {index}:")
+                print(match.group(1))
+            else:
+                print(f"No HTML content found for index {index}")
+
+
+        updated_html = re.sub(pattern, replacement, updated_html, flags=re.DOTALL)
+
+    match = re.search(pattern, updated_html, flags=re.DOTALL)
+    if match:
+        print("Match found:", match.group())
+    else:
+        print("No match found for pattern:", pattern)
+        
+    return updated_html
+
+
+# ファイルを読み込んで置換を実施する関数定義
+def replace_6_red(html_template, df):
+    if df is None: # ファイルデータが読み込まれたか確認
+        print("データフレームのロードに失敗しました。")
+        return html_template
+    
+    html_insert = define_6_red(html_template, df)
+    if html_insert is None:
+        print("置換に失敗しました。")
+        return html_template
+
+    print("6_redの置換が成功しました。")
+    return html_insert
+
+
+# <!-- 6-BLUE-H3-{index}-START -->
+
+
+# <!-- 6-BLUE-SPEECH-{index}-START -->
+
+
+# <!-- 6-BLUE-COMMENT-{index}-START -->
 
 
 # <!-- 7-RED -->
@@ -935,6 +1004,7 @@ def delete_sections(html_template):
     html_template = deleteSection3_lastptag(html_template)
     html_template = deleteSection5_1(html_template)
     html_template = deleteSection6_1(html_template)
+    html_template = deleteSection6_2(html_template)
     return html_template
 
 # 置換実行処理
@@ -958,6 +1028,7 @@ def replace_sections(html_template, df):
     html_template = replace_5_comment2(html_template, df)
     html_template = replace_5_age(html_template, df)
     html_template = replace_5_gender(html_template, df)
+    html_template = replace_6_red(html_template, df)
     html_template = replace_7_red(html_template, df)
     html_template = replace_7_blue(html_template, df)
     html_template = replace_8_red(html_template, df)
