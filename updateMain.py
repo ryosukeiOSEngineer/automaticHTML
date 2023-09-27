@@ -545,10 +545,7 @@ def html_5_comment_index_generate(html_template, df):
                   <div class="wp-block-group__inner-container">
                     <div class="wp-block-columns is-not-stacked-on-mobile">
                       <div class="wp-block-column" style="flex-basis:33.33%">
-                        <figure class="wp-block-image size-full is-resized"><!-- 5-{index+1}-ICON-START --><img decoding="async" loading="lazy"
-                            src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt=""
-                            class="wp-image-13148 luminous" style="width:90px;height:300px" width="90" height="300"
-                            data-luminous="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png"><!-- 5-{index+1}-ICON-END --></figure>
+                        <figure class="wp-block-image size-full is-resized"><!-- 5-{index+1}-ICON-START --><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148 luminous" style="width:90px;height:300px" width="90" height="300" data-luminous="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png"><!-- 5-{index+1}-ICON-END --></figure>
                       </div>
 
 
@@ -580,7 +577,7 @@ def html_5_comment_index_generate(html_template, df):
         ]
         
         # すべての新しいセクションを一つの文字列に連結
-        html_insert_5_comment_index = '\n\n\n\n'.join(new_template_parts_list)
+        html_insert_5_comment_index = '\n\n\n\n            '.join(new_template_parts_list)
 
 
         # 連結した文字列をHTMLテンプレートと置換
@@ -1075,14 +1072,18 @@ def define_6_blue_comment(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
         csv_data_6_blue_comment = row['9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい']
-        csv_split_list = re.split('。|\n', csv_data_6_blue_comment) + ['。']
-        next_elements = csv_split_list[0]
-        join_list = ''.join(next_elements)
+        csv_split_list = re.split('。|\n', csv_data_6_blue_comment)
+        next_elements = csv_split_list[1:]
+        
+        # 各要素の最後に「。」を追加
+        csv_split_list = [item + '。' if not item.endswith('。') else item for item in next_elements if item.strip()]
+                
+        # 各要素を<p>タグで囲む
+        join_list = '\n\n\n\n'.join([f'            <p>{item}</p>' for item in csv_split_list if item.strip()])  # if item.strip()を追加して、空白のみの要素や空の要素を無視
 
         pattern = f'<!-- 6-BLUE-COMMENT-{index}-START -->(.*?)<!-- 6-BLUE-COMMENT-{index}-END -->'
 
-        replacement = f'<!-- 6-BLUE-COMMENT-{index}-START -->{join_list}<!-- 6-BLUE-COMMENT-{index}-END -->'
-
+        replacement = f'<!-- 6-BLUE-COMMENT-{index}-START --><p>{join_list}</p><!-- 6-BLUE-COMMENT-{index}-END -->'
         updated_html = re.sub(pattern, replacement, updated_html)
         
     return updated_html
@@ -1109,8 +1110,8 @@ def define_7_red(df):
         csv_data_7_red = df.loc[0, '13. どんな人におすすめですか？3つ教えてください']
         csv_split_list = re.split('、|。|\n', csv_data_7_red)
         csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
-        csv_split_join = ' '.join(csv_list_customize)
-        html_insert_7_red = f'<p>特に{csv_split_join}におすすめです。</p>'
+        csv_split_join = ''.join(csv_list_customize)
+        html_insert_7_red = f'<p>特に{csv_split_join}におすすめです。'
         return html_insert_7_red
     except Exception as e: # もし失敗したら
         print(f"7-REDの置換生成に失敗しました: {e}")
@@ -1142,10 +1143,10 @@ def define_7_blue(df):
         csv_split_list = []
         for item in csv_data_7_blue:
             csv_split_list.extend(re.split('、|。|\n', str(item)))
-        csv_list_customize = ['<li>' + item + '</li>' for item in csv_split_list if item]
+        csv_list_customize = ['                  <li>' + item + '</li>' for item in csv_split_list if item]
         csv_split_join = '\n\n\n\n'.join(csv_list_customize)
         
-        html_insert_7_blue = f'<ul class="is-style-check_list">\n{csv_split_join}\n</ul>'
+        html_insert_7_blue = f'<ul class="is-style-check_list">\n{csv_split_join}</ul>'
         return html_insert_7_blue
     except Exception as e: # もし失敗したら
         print(f"7-BLUEの置換生成に失敗しました: {e}")
@@ -1178,7 +1179,7 @@ def define_8_red(df):
         csv_data_8_red = df.loc[0, '8. 水素水のメリットを3つ教えてください']
         csv_split_list = re.split('、|。|\n', csv_data_8_red)
         csv_split_join = '、'.join(csv_split_list)
-        html_insert_8_red = f'<p>XXXは{csv_split_join}のが魅力です。【意味ナイン】では、XXXは意味ないのか、意味あるのか調査し、評判やコメント、おすすめ代替案について紹介しています。</p>'
+        html_insert_8_red = f'<p>XXXは{csv_split_join}のが魅力です。【意味ナイン】では、XXXは意味ないのか、意味あるのか調査し、評判やコメント、おすすめ代替案について紹介しています。'
         return html_insert_8_red
     except Exception as e: # もし失敗したら
         print(f"8-REDの置換生成に失敗しました: {e}")
