@@ -36,7 +36,13 @@ df = None
 def browse_file():
     global df
     global file_entry
-    file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+
+    # 現在のスクリプトの場所を取得
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+
+    # このパスを初期ディレクトリとして指定
+    file_path = filedialog.askopenfilename(initialdir=current_directory, filetypes=[("CSV Files", "*.csv")])
+
     print(f"Selected file path: {file_path}")
     file_entry.delete(0, tk.END)
     file_entry.insert(0, file_path)
