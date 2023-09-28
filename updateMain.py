@@ -89,8 +89,6 @@ def deleteSection6_2(html_template, start_marker="<!-- 6-2-DELETE_START -->", en
     return re.sub(deleted_part6_2, '', html_template, flags=re.DOTALL)
 
 
-# ------------検索部分の定義----------------
-
 
 # ------------置換部分の関数定義----------------
 
@@ -108,6 +106,7 @@ def define_1_red(df):
     except Exception as e: # もし失敗したら
         print(f"1-REDの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_1_red(html_template, df): 
@@ -141,6 +140,7 @@ def define_1_blue(df):
     except Exception as e: # もし失敗したら
         print(f"1-REDの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_1_blue(html_template, df): 
@@ -178,6 +178,7 @@ def define_1_green(df):
         print(f"1-GREENの置換生成に失敗しました: {e}")
         return None
 
+
 # ファイルを読み込んで置換を実施する関数定義
 def replace_1_green(html_template, df): 
     if df is None: # ファイルデータが読み込まれたか確認
@@ -212,6 +213,7 @@ def define_2_red(df):
     except Exception as e: # もし失敗したら
         print(f"2-REDの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_2_red(html_template, df): 
@@ -253,6 +255,7 @@ def define_3_tag(df):
     except Exception as e: # もし失敗したら
         print(f"3-TAGの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_3_tag(html_template, df): 
@@ -296,6 +299,7 @@ def html_3_comment_index_generate(html_template, df):
     except Exception as e: # もし失敗したら
         print(f"3_comment_indexの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_3_comment(html_template, df): 
@@ -342,6 +346,7 @@ def define_3_icon_index(df,index):
     return image_file
 
     # image_fileを<!-- 3-icon-{index} -->へと置換する
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_3_icon_index(html_template, df): 
@@ -444,6 +449,7 @@ def define_4_red(df):
         print(f"4-REDの置換生成に失敗しました: {e}")
         return None
 
+
 # ファイルを読み込んで置換を実施する関数定義
 def replace_4_red(html_template, df): 
     if df is None: # ファイルデータが読み込まれたか確認
@@ -479,6 +485,7 @@ def define_4_blue(df):
     except Exception as e: # もし失敗したら
         print(f"4-BLUEの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_4_blue(html_template, df): 
@@ -790,7 +797,6 @@ def replace_5_comment1(html_template, df):
     return html_insert # この行で更新されたHTMLテンプレートを返す
 
 
-
 # <!-- 5-{index}-COMMENT2-START -->
 # 置換を定義する関数
 def define_5_comment2(html_template, df):
@@ -845,6 +851,7 @@ def html_6_red_template_generate(html_template, df):
     except Exception as e: # もし失敗したら
         print(f"6_red_indexの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_6_red_template(html_template, df): 
@@ -934,6 +941,7 @@ def html_6_blue_template_generate(html_template, df):
     except Exception as e: # もし失敗したら
         print(f"6_blue_indexの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_6_blue_template(html_template, df): 
@@ -1067,6 +1075,7 @@ def replace_6_blue_speech(html_template, df):
     print("6_blue_speechの置換が成功しました。")
     return html_insert
 
+
 # <!-- 6-BLUE-COMMENT-{index}-START -->
 def define_6_blue_comment(html_template, df):
     updated_html = html_template
@@ -1103,6 +1112,7 @@ def replace_6_blue_comment(html_template, df):
     print("6_blue_commentの置換が成功しました。")
     return html_insert
 
+
 # <!-- 7-RED -->
 # 置換を定義する関数
 def define_7_red(df): 
@@ -1116,6 +1126,7 @@ def define_7_red(df):
     except Exception as e: # もし失敗したら
         print(f"7-REDの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_7_red(html_template, df): 
@@ -1135,6 +1146,7 @@ def replace_7_red(html_template, df):
     print("7-REDの置換が成功しました。")
     return updated_html_part_7_red
 
+
 # <!-- 7-BLUE -->
 # 置換を定義する関数
 def define_7_blue(df): 
@@ -1151,6 +1163,7 @@ def define_7_blue(df):
     except Exception as e: # もし失敗したら
         print(f"7-BLUEの置換生成に失敗しました: {e}")
         return None
+
 
 # ファイルを読み込んで置換を実施する関数定義
 def replace_7_blue(html_template, df): 
@@ -1185,6 +1198,7 @@ def define_8_red(df):
         print(f"8-REDの置換生成に失敗しました: {e}")
         return None
 
+
 # ファイルを読み込んで置換を実施する関数定義
 def replace_8_red(html_template, df): 
     if df is None: # ファイルデータが読み込まれたか確認
@@ -1206,7 +1220,10 @@ def replace_8_red(html_template, df):
 
 
 
-# ------------ループ処理----------------
+
+
+
+# ------------実行処理----------------
 
 
 # 削除実行処理
@@ -1218,6 +1235,7 @@ def delete_sections(html_template):
     html_template = deleteSection6_1(html_template)
     html_template = deleteSection6_2(html_template)
     return html_template
+
 
 # 置換実行処理
 def replace_sections(html_template, df):
@@ -1261,13 +1279,15 @@ def main_function(html_template, df):
     return html_template
 
 
-
 # その後の処理で更新されたテンプレートを使用する
 with open('NEW ﾌｧｲﾙ.html', 'w', encoding='utf-8') as htmlfile:
     htmlfile.write(html_template)
 
 
-# ------------削除、置換の処理----------------
+
+
+
+
 
 
 
