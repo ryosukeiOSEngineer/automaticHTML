@@ -1,14 +1,22 @@
 #!/bin/bash
 
-# Homebrewのインストール (もし未インストールの場合)
+# Homebrewのインストール
 which brew > /dev/null || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+# pyenvのインストール
+brew install pyenv || echo "pyenv is already installed."
+
 # Python 3.10.8のインストール
-brew install python@3.10.8 || brew upgrade python@3.10.8
+pyenv versions | grep 3.10.8 || pyenv install 3.10.8
 
-# pip3とpython3のパスを正確に指定する (Homebrewでのインストールに応じて適切なバージョンを使用する)
-PIP_PATH=$(brew --prefix)/opt/python@3.10.8/bin/pip3
-PYTHON_PATH=$(brew --prefix)/opt/python@3.10.8/bin/python3
+# ディレクトリ固有のPythonバージョンの設定
+cd /Users/coinlocker/Desktop/automaticHTML
+pyenv local 3.10.8
 
-$PIP_PATH install -r requirements.txt
-$PYTHON_PATH updatemain.py
+# 依存関係のインストール
+pip install -r requirements.txt
+
+# Pythonスクリプトの実行
+python updatemain.py
+
+

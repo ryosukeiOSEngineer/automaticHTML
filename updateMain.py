@@ -1360,6 +1360,11 @@ root = tk.Tk()
 root.title("CSV Selector")
 root.geometry('600x400')
 
+# ウィンドウを前面に持ってくる
+root.lift()
+root.call('wm', 'attributes', '.', '-topmost', True)
+root.after_idle(root.call, 'wm', 'attributes', '.', '-topmost', False)
+
 # グリッドで配置するフレーム
 grid_frame = tk.Frame(root)
 grid_frame.pack()
