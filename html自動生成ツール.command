@@ -29,6 +29,6 @@ fi
 pip install -r requirements.txt
 
 # Pythonスクリプトの実行
-python updatemain.py
+open -a "Python Launcher" /Users/coinlocker/Desktop/automaticHTML/updateMain.py
 
 
