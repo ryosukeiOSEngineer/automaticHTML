@@ -103,7 +103,7 @@ def deleteSection6_2(html_template, start_marker="<!-- 6-2-DELETE_START -->", en
 # 置換を定義する関数
 def define_1_red(df): 
     try: # もし成功したら
-        csv_data_1_red = df.loc[0, '8. 水素水のメリットを3つ教えてください']
+        csv_data_1_red = df.iloc[0, 14] #'8. 水素水のメリットを3つ教えてください'
         csv_split_list = re.split('、|。|\n', csv_data_1_red)
         csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
         csv_split_join = ''.join(csv_list_customize)
@@ -137,7 +137,7 @@ def replace_1_red(html_template, df):
 # 置換を定義する関数
 def define_1_blue(df): 
     try: # もし成功したら
-        csv_data_1_blue = df.loc[1, '8. 水素水のメリットを3つ教えてください']
+        csv_data_1_blue = df.iloc[1, 14]  # '8. 水素水のメリットを3つ教えてください'
         csv_split_list = re.split('、|。|\n', csv_data_1_blue)
         csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
         csv_split_join = ''.join(csv_list_customize)
@@ -171,7 +171,7 @@ def replace_1_blue(html_template, df):
 # 置換を定義する関数
 def define_1_green(df): 
     try: # もし成功したら
-        csv_data_1_green = df.loc[2:, '8. 水素水のメリットを3つ教えてください'].tolist()
+        csv_data_1_green = df.iloc[2:, 14].tolist()
         csv_split_list = []
         for item in csv_data_1_green:
             csv_split_list.extend(re.split('、|。|\n', str(item)))
@@ -209,7 +209,7 @@ def replace_1_green(html_template, df):
 # 置換を定義する関数
 def define_2_red(df): 
     try: # もし成功したら
-        csv_data_2_red = df.loc[0, '13. どんな人におすすめですか？3つ教えてください']
+        csv_data_2_red = df.iloc[0, 19] #'13. どんな人におすすめですか？3つ教えてください'
         csv_split_list = re.split('、|。|\n', csv_data_2_red)
         csv_list_customize = ['                  <li>' + item + '</li>' for item in csv_split_list if item]
         csv_split_join = '\n\n\n\n'.join(csv_list_customize)
@@ -245,7 +245,7 @@ def replace_2_red(html_template, df):
 # 置換を定義する関数
 def define_3_tag(df): 
     try: # もし成功したら
-        csv_data_3_tag = df.loc[0:, '7. 前問で答えた内容を「一言」で言い表してください'].tolist()
+        csv_data_3_tag = df.iloc[0:, 13].tolist() #'7. 前問で答えた内容を「一言」で言い表してください'
         csv_split_list = []
         for item in csv_data_3_tag:
             cleaned_item = str(item).replace(',', '').replace('、', '').replace('.', '').replace('。', '').replace('\n', '') # いらない文字を何も無しに置換して削除
@@ -330,10 +330,10 @@ def define_3_icon_index(df,index):
         '1': '男性',
         '2': '女性'
     }
-    gender_value = df.loc[index, '2. 回答者様の性別を教えて下さい']
+    gender_value = df.iloc[index, 4]  #'2. 回答者様の性別を教えて下さい'
     gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
 
-    age_group_value = df.loc[index, '3. 回答者様の年齢を教えて下さい']
+    age_group_value = df.iloc[index, 6]  # '3. 回答者様の年齢を教えて下さい'
 
     # 年齢層を40代以上と40代未満に分ける
     age_40_or_above = int(age_group_value) >= 4
@@ -385,7 +385,7 @@ def replace_3_icon_index(html_template, df):
 def define_3_comment_index(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
-        csv_data_3_comment = row['7. 前問で答えた内容を「一言」で言い表してください']
+        csv_data_3_comment = row[13]  #'7. 前問で答えた内容を「一言」で言い表してください'
         cleaned_comment = re.sub('、|。|\n', '', csv_data_3_comment)  # デリミタでクリーニング
         
         pattern = f"<!-- 3-COMMENT-START-{index} --><p>(.*?)</p><!-- 3-COMMENT-END-{index} -->"
@@ -414,7 +414,7 @@ def replace_3_comment_index(html_template, df):
 def define_3_ptag_index(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
-        csv_data_3_ptag = row['6. 水素水を全く知らない人に説明してください（客観的に）※感想ではありません']
+        csv_data_3_ptag = row[12] #'6. 水素水を全く知らない人に説明してください（客観的に）※感想ではありません'
         cleaned_3_ptag_list = csv_data_3_ptag.replace('。', '。\n').split('\n')
 
         # cleaned_3_ptag_listの各要素を<p></p>で囲んで連結
@@ -445,7 +445,7 @@ def replace_3_ptag_index(html_template, df):
 # 置換を定義する関数
 def define_4_red(df): 
     try: # もし成功したら
-        csv_data_4_red = df.loc[0, '11. 水素水のデメリットを3つ教えてください']
+        csv_data_4_red = df.iloc[0, 17]  # '11. 水素水のデメリットを3つ教えてください'
         csv_split_list = re.split('、|。|\n', csv_data_4_red)
         csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
         csv_split_join = ''.join(csv_list_customize)
@@ -479,7 +479,7 @@ def replace_4_red(html_template, df):
 # 置換を定義する関数
 def define_4_blue(df): 
     try: # もし成功したら
-        csv_data_4_blue = df.loc[1:, '11. 水素水のデメリットを3つ教えてください'].tolist()
+        csv_data_4_blue = df.iloc[1:, 17].tolist()  #'11. 水素水のデメリットを3つ教えてください'
         csv_split_list = []
         for item in csv_data_4_blue:
             csv_split_list.extend(re.split('、|。|\n', str(item)))
@@ -624,7 +624,7 @@ def define_5_icon_index(df,index):
         '1': '男性',
         '2': '女性'
     }
-    gender_value = df.loc[index, '2. 回答者様の性別を教えて下さい']
+    gender_value = df.iloc[index, 4]  # '2. 回答者様の性別を教えて下さい'
     gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
 
     if gender == '男性':
@@ -779,7 +779,7 @@ def replace_5_gender(html_template, df):
 def define_5_comment1(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
-        csv_data_5_comment = row['12. 水素水を使ったことで何か変わりましたか？']
+        csv_data_5_comment = row[18]  # '12. 水素水を使ったことで何か変わりましたか？'
         first_sentence = csv_data_5_comment.split('。')[0] + '。'
 
         pattern = f"<!-- 5-{index}-COMMENT1-START -->(.*?)<!-- 5-{index}-COMMENT1-END -->"
@@ -808,7 +808,7 @@ def replace_5_comment1(html_template, df):
 def define_5_comment2(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
-        csv_data_5_comment = row['12. 水素水を使ったことで何か変わりましたか？']
+        csv_data_5_comment = row[18]  # '12. 水素水を使ったことで何か変わりましたか？'
         sentences = csv_data_5_comment.split('。')[1:]
         next_sentence_list = [sentence + '。' for sentence in sentences if sentence]
         joined_sentences = ''.join(next_sentence_list)
@@ -880,7 +880,7 @@ def replace_6_red_template(html_template, df):
 def define_6_red(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
-        csv_data_6_red = row['10. 前問で答えた体験談のメリットを「一言」で言い表してください']
+        csv_data_6_red = row[16]  # '10. 前問で答えた体験談のメリットを「一言」で言い表してください'
         cleaned_comment = re.sub('、|。|\n', '', csv_data_6_red)  # デリミタでクリーニング
 
         pattern = f'<!-- 6-{index}-RED-START -->(.*?)<!-- 6-{index}-RED-END -->'
@@ -969,7 +969,7 @@ def replace_6_blue_template(html_template, df):
 def define_6_blue_h3(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
-        csv_data_6_blue_h3 = row['10. 前問で答えた体験談のメリットを「一言」で言い表してください']
+        csv_data_6_blue_h3 = row[16]  # '10. 前問で答えた体験談のメリットを「一言」で言い表してください'
         cleaned_comment = re.sub('、|。|\n', '', csv_data_6_blue_h3)  # デリミタでクリーニング
 
         pattern = f'<!-- 6-BLUE-H3-{index}-START -->(.*?)<!-- 6-BLUE-H3-{index}-END -->'
@@ -1004,10 +1004,10 @@ def define_6_blue_icon(df,index):
         '1': '男性',
         '2': '女性'
     }
-    gender_value = df.loc[index, '2. 回答者様の性別を教えて下さい']
+    gender_value = df.iloc[index, 4] # 2. 回答者様の性別を教えて下さい
     gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
 
-    age_group_value = df.loc[index, '3. 回答者様の年齢を教えて下さい']
+    age_group_value = df.iloc[index, 6] #'3. 回答者様の年齢を教えて下さい'
 
     # 年齢層を40代以上と40代未満に分ける
     age_40_or_above = int(age_group_value) >= 4
@@ -1054,7 +1054,7 @@ def replace_6_blue_icon(html_template, df):
 def define_6_blue_speech(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
-        csv_data_6_blue_speech = row['9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい']
+        csv_data_6_blue_speech = row[15]  # '9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい'
         csv_split_list = re.split('。|\n', csv_data_6_blue_speech)
         first_element = csv_split_list[0]
 
@@ -1086,7 +1086,7 @@ def replace_6_blue_speech(html_template, df):
 def define_6_blue_comment(html_template, df):
     updated_html = html_template
     for index, row in df.iterrows():
-        csv_data_6_blue_comment = row['9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい']
+        csv_data_6_blue_comment = row[15]  # '9. 前問で答えたメリットを体験談を交えて詳しく教えて下さい'
         csv_split_list = re.split('。|\n', csv_data_6_blue_comment)
         next_elements = csv_split_list[1:]
         
@@ -1123,7 +1123,7 @@ def replace_6_blue_comment(html_template, df):
 # 置換を定義する関数
 def define_7_red(df): 
     try: # もし成功したら
-        csv_data_7_red = df.loc[0, '13. どんな人におすすめですか？3つ教えてください']
+        csv_data_7_red = df.iloc[0, 19]  # '13. どんな人におすすめですか？3つ教えてください'
         csv_split_list = re.split('、|。|\n', csv_data_7_red)
         csv_list_customize = ['「' + item + '」' for item in csv_split_list if item]
         csv_split_join = ''.join(csv_list_customize)
@@ -1157,7 +1157,7 @@ def replace_7_red(html_template, df):
 # 置換を定義する関数
 def define_7_blue(df): 
     try: # もし成功したら
-        csv_data_7_blue = df.loc[1:, '13. どんな人におすすめですか？3つ教えてください'].tolist()
+        csv_data_7_blue = df.iloc[1:, 19].tolist()  # '13. どんな人におすすめですか？3つ教えてください'
         csv_split_list = []
         for item in csv_data_7_blue:
             csv_split_list.extend(re.split('、|。|\n', str(item)))
@@ -1195,7 +1195,7 @@ def replace_7_blue(html_template, df):
 # 置換を定義する関数
 def define_8_red(df): 
     try: # もし成功したら
-        csv_data_8_red = df.loc[0, '8. 水素水のメリットを3つ教えてください']
+        csv_data_8_red = df.iloc[0, 14]  # '8. 水素水のメリットを3つ教えてください'
         csv_split_list = re.split('、|。|\n', csv_data_8_red)
         csv_split_join = '、'.join(csv_split_list)
         html_insert_8_red = f'<p>XXXは{csv_split_join}のが魅力です。【意味ナイン】では、XXXは意味ないのか、意味あるのか調査し、評判やコメント、おすすめ代替案について紹介しています。'
@@ -1320,7 +1320,8 @@ def on_generate_button_click():
     try:
         df = pd.read_csv(file_path)
     except Exception as e:
-        result_label.config(text=f"エラー: CSVファイルを読み込めませんでした - {e}")
+        error_message = f"エラー: CSVファイルのｴﾝｺｰﾄﾞが違うため、読み込みに失敗しました。 - {e}"
+        result_label.config(text=error_message, wraplength=200)
         return
 
     # main_functionを呼び出し
