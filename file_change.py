@@ -37,10 +37,29 @@ root = tk.Tk()
 root.title("エンコード変換ツール")
 root.geometry('300x150')
 
-label = tk.Label(root, text="Shift-JISのCSVファイルをUTF-8に変換")
+# ウィンドウを中央に表示するための計算
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+# ウィンドウのサイズ
+window_width = 300
+window_height = 150
+
+# ウィンドウの位置を計算
+x_coordinate = int((screen_width / 2) - (window_width / 2))
+y_coordinate = int((screen_height / 2) - (window_height / 2))
+
+# ウィンドウの位置とサイズを設定
+root.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
+label = tk.Label(root, text="Shift-JISのCSVファイルをUTF-8へ変換")
 label.pack(pady=20)
 
 convert_button = tk.Button(root, text="ファイルを選択して変換", command=on_convert_button_click)
 convert_button.pack(pady=20)
+
+# ウィンドウを最前面に表示
+root.lift()
+root.attributes('-topmost', True)
 
 root.mainloop()

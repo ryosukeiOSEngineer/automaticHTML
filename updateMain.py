@@ -5,7 +5,13 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 import pandas as pd
 import uuid
+import subprocess
 
+def run_file_change():
+    subprocess.run(["python", "file_change.py"])
+
+
+# 仮のIDを発行するため
 def generate_uuid():
     return str(uuid.uuid4())
 
@@ -1362,6 +1368,11 @@ def copy_to_clipboard():
     text_widget.tag_remove(tk.SEL, "1.0", tk.END)
     result_label.config(text="コピーされました！")
 
+def on_entry_click(event):
+    if word_entry.get() == 'XXX':
+        word_entry.delete(0, tk.END)
+        word_entry.config(fg='black')
+
 # Tkinterウィンドウを作成
 root = tk.Tk()
 root.title("CSV Selector")
@@ -1374,7 +1385,7 @@ root.after_idle(root.call, 'wm', 'attributes', '.', '-topmost', False)
 
 # グリッドで配置するフレーム
 grid_frame = tk.Frame(root)
-grid_frame.pack()
+grid_frame.pack(pady=20)
 
 # 空のラベルを追加して高さ設定
 empty_label = tk.Label(grid_frame, height=2)  
@@ -1384,8 +1395,9 @@ empty_label.grid(row=0, column=0, columnspan=3)
 # 特定ワードの入力フィールド
 word_label = tk.Label(grid_frame, text='特定ワードを入力: ')
 word_label.grid(row=1, column=0)
-word_entry = tk.Entry(grid_frame)
+word_entry = tk.Entry(grid_frame, fg='grey')
 word_entry.insert(0, 'XXX')
+word_entry.bind('<FocusIn>', on_entry_click)
 word_entry.grid(row=1, column=1)
 
 # ファイル選択エントリとボタン
@@ -1403,12 +1415,19 @@ file_button.grid(row=2, column=2)
 generate_button = tk.Button(grid_frame, text="HTML生成 START", command=on_generate_button_click)
 generate_button.grid(row=4, column=0, columnspan=3, pady=10)
 
+
 copy_button = tk.Button(grid_frame, text="HTML コピー", command=copy_to_clipboard)
 copy_button.grid(row=5, column=0, columnspan=3, pady=10)
 
+
+# モジュールを実行
+generate_button = tk.Button(grid_frame, text="ファイル変換", command=run_file_change)
+generate_button.grid(row=6, column=0, columnspan=3, pady=10)
+
+
 # 結果を表示するラベル
 result_label = tk.Label(grid_frame, text="")
-result_label.grid(row=6, column=0, columnspan=3, pady=10)
+result_label.grid(row=7, column=0, columnspan=3, pady=10)
 
 # テキストウィジェットとスクロールバーの設置
 text_widget = tk.Text(root, wrap=tk.NONE)
