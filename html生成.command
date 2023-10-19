@@ -18,7 +18,7 @@ if [[ ! -z $directory_path ]]; then
         pip install -r requirements.txt
 
         # Pythonスクリプトの実行
-        open -a "Python Launcher" "$directory_path/updateMain.py"
+        open -a "Python Launcher" "$directory_path/TwoUpdateMain.py"
     else
         echo "Pythonバージョンが3.10.8ではありません。現在のバージョン: $current_version"
         exit 1  # エラーで終了
