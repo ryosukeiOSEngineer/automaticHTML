@@ -1041,7 +1041,6 @@ def replace_6_blue_icon(html_template, df):
 
 
         replace_6_blue_icon = f'<div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="{image_file}" alt="" class="c-balloon__iconImg" width="80px" height="80px">'
-        print(replace_6_blue_icon)
 
         html_template = re.sub(fr'<!-- 6-BLUE—ICON-{index}-START -->(.*?)<!-- 6-BLUE-ICON-{index}-END -->', replace_6_blue_icon, html_template, flags=re.DOTALL)
         

@@ -492,7 +492,7 @@ def define_4_blue(df):
         csv_list_customize = ['<!-- wp:list-item -->\n<li>' + item + '</li>\n<!-- /wp:list-item -->' for item in csv_split_list if item]
         csv_split_join = '\n\n'.join(csv_list_customize)
         
-        html_insert_4_blue = f'<ul class="is-style-triangle_list">\n{csv_split_join}\n                </ul>'
+        html_insert_4_blue = f'<ul class="is-style-triangle_list">{csv_split_join}</ul>'
         return html_insert_4_blue
     except Exception as e: # もし失敗したら
         print(f"4-BLUEの置換生成に失敗しました: {e}")
@@ -526,9 +526,9 @@ def html_5_comment_index_generate(html_template, df):
         half_index_count = len(df) // 2
 
         new_template_parts_list = [
-            f'''<!-- 5-TEMPLATE-{index}-START --><!-- wp:column -->\n<div class="wp-block-columns">\n<div class="wp-block-column"><!-- wp:group {"className":"is-style-bg_grid"} -->\n<div class="wp-block-group is-style-bg_grid"><!-- wp:columns {"isStackedOnMobile":false} -->\n<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"33.33%"} -->\n<div class="wp-block-column" style="flex-basis:33.33%"><!-- wp:image {"id":13147,"width":"90px","height":"250px","sizeSlug":"full","linkDestination":"none"} -->\n<figure class="wp-block-image size-full is-resized"><!-- 5-{index}-ICON-START --><img src="https://iminain.com/wp-content/uploads/2023/06/men-touka-2.png" alt="" class="wp-image-13147" style="width:90px;height:250px"/><!-- 5-{index}-ICON-END --></figure>\n<!-- /wp:image --></div>\n<!-- /wp:column -->\n<!-- wp:column {"width":"66.66%"} -->\n<div class="wp-block-column" style="flex-basis:66.66%"><!-- wp:paragraph -->\n<p>期間：<!-- 5-{index}-PERIOD-START -->1ヵ月未満<!-- 5-{index}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p>\n<!-- /wp:paragraph -->\n<!-- wp:paragraph {"align":"right"} -->\n<p class="has-text-align-right"><!-- 5-{index}-AGE-START -->40代<!-- 5-{index}-AGE-END -->・<!-- 5-{index}-GENDER-START -->女性<!-- 5-{index}-GENDER-END --></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->\n<!-- wp:paragraph --><!-- 5-COMMENT1 -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index}-COMMENT1-START -->肌がツヤツヤになりました。<!-- 5-{index}-COMMENT1-END --></mark></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph --><!-- 5-COMMENT2 -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index}-COMMENT2-START -->便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。<!-- 5-{index}-COMMENT2-END --></mark></p>\n<!-- /wp:paragraph --></div><!-- /wp:group --></div>\n<!-- /wp:column -->\n\n
+        f'''<!-- 5-TEMPLATE-{index}-START --><!-- wp:column -->\n<div class="wp-block-columns">\n<div class="wp-block-column"><!-- wp:group {{"className":"is-style-bg_grid"}} -->\n<div class="wp-block-group is-style-bg_grid"><!-- wp:columns {{"isStackedOnMobile":false}} -->\n<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"33.33%"} -->\n<div class="wp-block-column" style="flex-basis:33.33%"><!-- wp:image {"id":13147,"width":"90px","height":"250px","sizeSlug":"full","linkDestination":"none"} -->\n<figure class="wp-block-image size-full is-resized"><!-- 5-{index}-ICON-START --><img src="https://iminain.com/wp-content/uploads/2023/06/men-touka-2.png" alt="" class="wp-image-13147" style="width:90px;height:250px"/><!-- 5-{index}-ICON-END --></figure>\n<!-- /wp:image --></div>\n<!-- /wp:column -->\n<!-- wp:column {"width":"66.66%"} -->\n<div class="wp-block-column" style="flex-basis:66.66%">\n<!-- wp:paragraph -->\n<p>期間：<!-- 5-{index}-PERIOD-START -->1ヵ月未満<!-- 5-{index}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p>\n<!-- /wp:paragraph -->\n<!-- wp:paragraph {"align":"right"} -->\n<p class="has-text-align-right"><!-- 5-{index}-AGE-START -->40代<!-- 5-{index}-AGE-END -->・<!-- 5-{index}-GENDER-START -->女性<!-- 5-{index}-GENDER-END --></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->\n<!-- wp:paragraph --><!-- 5-COMMENT1 -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index}-COMMENT1-START -->肌がツヤツヤになりました。<!-- 5-{index}-COMMENT1-END --></mark></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph --><!-- 5-COMMENT2 -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index}-COMMENT2-START -->便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。<!-- 5-{index}-COMMENT2-END --></mark></p>\n<!-- /wp:paragraph --></div><!-- /wp:group --></div>\n<!-- /wp:column -->\n\n
             
-            <!-- wp:column -->\n<div class="wp-block-column"><!-- wp:group {"className":"is-style-bg_grid"} -->\n<div class="wp-block-group is-style-bg_grid"><!-- wp:columns {"isStackedOnMobile":false} -->\n<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"33.33%"} -->\n<div class="wp-block-column" style="flex-basis:33.33%"><!-- wp:image {"id":13148,"width":"90px","height":"300px","sizeSlug":"full","linkDestination":"none"} -->\n<figure class="wp-block-image size-full is-resized"><!-- 5-{index+1}-ICON-START --><img src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148" style="width:90px;height:300px"/><!-- 5-{index+1}-ICON-END --></figure>\n<!-- /wp:image --></div>\n<!-- /wp:column -->\n\n<!-- wp:column {"width":"66.66%"} -->\n<div class="wp-block-column" style="flex-basis:66.66%"><!-- wp:paragraph -->\n<p>期間：<!-- 5-{index+1}-PERIOD-START -->3年以上<!-- 5-{index+1}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index+1}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p><!-- /wp:paragraph -->\n\n<!-- wp:paragraph {"align":"right"} --><p class="has-text-align-right"><!-- 5-{index+1}-AGE-START -->30代<!-- 5-{index+1}-AGE-END -->・<!-- 5-{index+1}-GENDER-START -->女性<!-- 5-{index+1}-GENDER-END --></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->\n\n<!-- wp:paragraph -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index+1}-COMMENT1-START -->今までは普通の安いミネラルウォーターを飲んでいましたが、水素水に変えてから便通がよくなりました。<!-- 5-{index+1}-COMMENT1-END --></mark></p><!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index+1}-COMMENT2-START -->個人的には、腸活に役立っている気がします。また、便通が良くなったことで肌トラブルも少なくなった気がします。子どもも嫌がらずに水素水を飲んでくれるので、食育としても助かっている商品です。<!-- 5-{index+1}-COMMENT2-END --></mark></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:group --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->'''
+            <!-- wp:column -->\n<div class="wp-block-column"><!-- wp:group {"className":"is-style-bg_grid"} -->\n<div class="wp-block-group is-style-bg_grid"><!-- wp:columns {{"isStackedOnMobile":false}} -->\n<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"33.33%"} -->\n<div class="wp-block-column" style="flex-basis:33.33%"><!-- wp:image {{"id":13148,"width":"90px","height":"300px","sizeSlug":"full","linkDestination":"none"}} -->\n<figure class="wp-block-image size-full is-resized"><!-- 5-{index+1}-ICON-START --><img src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148" style="width:90px;height:300px"/><!-- 5-{index+1}-ICON-END --></figure>\n<!-- /wp:image --></div>\n<!-- /wp:column -->\n\n<!-- wp:column {"width":"66.66%"} -->\n<div class="wp-block-column" style="flex-basis:66.66%"><!-- wp:paragraph -->\n<p>期間：<!-- 5-{index+1}-PERIOD-START -->3年以上<!-- 5-{index+1}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index+1}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p><!-- /wp:paragraph -->\n\n<!-- wp:paragraph {"align":"right"} --><p class="has-text-align-right"><!-- 5-{index+1}-AGE-START -->30代<!-- 5-{index+1}-AGE-END -->・<!-- 5-{index+1}-GENDER-START -->女性<!-- 5-{index+1}-GENDER-END --></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->\n\n<!-- wp:paragraph -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index+1}-COMMENT1-START -->今までは普通の安いミネラルウォーターを飲んでいましたが、水素水に変えてから便通がよくなりました。<!-- 5-{index+1}-COMMENT1-END --></mark></p><!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index+1}-COMMENT2-START -->個人的には、腸活に役立っている気がします。また、便通が良くなったことで肌トラブルも少なくなった気がします。子どもも嫌がらずに水素水を飲んでくれるので、食育としても助かっている商品です。<!-- 5-{index+1}-COMMENT2-END --></mark></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:group --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->'''
             for index in range(0, 2*half_index_count, 2)
         ]
         
@@ -785,7 +785,7 @@ def html_6_red_template_generate(html_template, df):
         index_count = len(df)
 
         new_template_parts_list = [
-            f'''<li><a href="#kouka-{index+1}"<!-- 6-{index}-RED-START -->簡単に綺麗を保てる<!-- 6-{index}-RED-END --></a></li>'''
+            f'''<!-- wp:list-item -->\n<li><a href="#kouka-{index+1}"<!-- 6-{index}-RED-START -->簡単に綺麗を保てる<!-- 6-{index}-RED-END --></a></li>\n<!-- /wp:list-item -->'''
             for index in range(index_count)
         ]
         
@@ -854,33 +854,15 @@ def replace_6_red(html_template, df):
 def html_6_blue_template_generate(html_template, df):
     try:
         index_count = len(df)
+        print(f"index_count: {index_count}")
 
         new_template_parts_list = [
-            f'''<h3 class="wp-block-heading" id="kouka-{index+1}"><!-- 6-BLUE-H3-{index}-START -->簡単に綺麗を保てる<!-- 6-BLUE-H3-{index}-END --></h3>
-
-
-            <div class="swell-block-balloon">
-              <div class="c-balloon -bln-left" data-col="yellow">
-                <!-- 6-BLUE—ICON-{index}-START --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy"
-                    src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt=""
-                    class="c-balloon__iconImg" width="80px" height="80px"><!-- 6-BLUE-ICON-{index}-END --></div>
-                <div class="c-balloon__body -speaking -border-none">
-                  <div class="c-balloon__text">
-                    <p><!-- 6-BLUE-SPEECH-{index}-START -->とにかく簡単で安く、綺麗になれることです。<!-- 6-BLUE-SPEECH-{index}-END --></p>
-                    <span class="c-balloon__shapes"><span class="c-balloon__before"></span><span
-                        class="c-balloon__after"></span></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <p><!-- 6-BLUE-COMMENT-{index}-START -->色々な商品を試しましたが、体の内側からよくなり、健康を保ちながら、美しくなっていくというのは、この水素水以外は、まだ経験したことがありません。<!-- 6-BLUE-COMMENT-{index}-END --></p>'''
+            f'''<!-- wp:heading {{"level":3}} -->\n<h3 class="wp-block-heading" id="kouka-{index+1}"><!-- 6-BLUE-H3-{index}-START -->簡単に綺麗を保てる<!-- 6-BLUE-H3-{index}-END --></h3>\n<!-- /wp:heading -->\n\n<!-- wp:loos/balloon {{"balloonID":"12"}} -->\n<p><!-- 6-BLUE-SPEECH-{index}-START -->とにかく簡単で安く、綺麗になれることです。<!-- 6-BLUE-SPEECH-{index}-END --></p>\n<!-- /wp:loos/balloon -->\n\n<!-- 6-BLUE-COMMENT-{index}-START -->色々な商品を試しましたが、体の内側からよくなり、健康を保ちながら、美しくなっていくというのは、この水素水以外は、まだ経験したことがありません。<!-- 6-BLUE-COMMENT-{index}-END -->'''
             for index in range(index_count)
         ]
         
         # すべての新しいセクションを一つの文字列に連結
-        html_insert_6_blue_template = '\n\n\n\n            '.join(new_template_parts_list)
+        html_insert_6_blue_template = '\n\n'.join(new_template_parts_list)
 
         # 連結した文字列をHTMLテンプレートと置換
         updated_html_6_blue_template = re.sub(r'<!-- 6-2-TEMPLATE-START -->(.*?)<!-- 6-2-TEMPLATE-END -->', html_insert_6_blue_template, html_template, flags=re.DOTALL)
@@ -977,7 +959,6 @@ def replace_6_blue_icon(html_template, df):
 
 
         replace_6_blue_icon = f'<div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="{image_file}" alt="" class="c-balloon__iconImg" width="80px" height="80px">'
-        print(replace_6_blue_icon)
 
         html_template = re.sub(fr'<!-- 6-BLUE—ICON-{index}-START -->(.*?)<!-- 6-BLUE-ICON-{index}-END -->', replace_6_blue_icon, html_template, flags=re.DOTALL)
         
@@ -1036,11 +1017,11 @@ def define_6_blue_comment(html_template, df):
         csv_split_list = [item + '。' if not item.endswith('。') else item for item in next_elements if item.strip()]
                 
         # 各要素を<p>タグで囲む
-        join_list = '\n\n\n\n'.join([f'            <p>{item}</p>' for item in csv_split_list if item.strip()])  # if item.strip()を追加して、空白のみの要素や空の要素を無視
+        join_list = '\n\n'.join([f'<!-- wp:paragraph -->\n<p>{item}</p>\n<!-- /wp:paragraph -->' for item in csv_split_list if item.strip()])  # if item.strip()を追加して、空白のみの要素や空の要素を無視
 
         pattern = f'<!-- 6-BLUE-COMMENT-{index}-START -->(.*?)<!-- 6-BLUE-COMMENT-{index}-END -->'
 
-        replacement = f'<!-- 6-BLUE-COMMENT-{index}-START --><p>{join_list}</p><!-- 6-BLUE-COMMENT-{index}-END -->'
+        replacement = f'<!-- 6-BLUE-COMMENT-{index}-START -->{join_list}<!-- 6-BLUE-COMMENT-{index}-END -->'
         updated_html = re.sub(pattern, replacement, updated_html)
         
     return updated_html
@@ -1103,10 +1084,10 @@ def define_7_blue(df):
         csv_split_list = []
         for item in csv_data_7_blue:
             csv_split_list.extend(re.split('、|。|\n', str(item)))
-        csv_list_customize = ['                  <li>' + item + '</li>' for item in csv_split_list if item]
-        csv_split_join = '\n\n\n\n'.join(csv_list_customize)
+        csv_list_customize = ['<!-- wp:list-item -->\n<li>' + item + '</li>\n<!-- /wp:list-item -->' for item in csv_split_list if item]
+        csv_split_join = '\n\n'.join(csv_list_customize)
         
-        html_insert_7_blue = f'<ul class="is-style-check_list">\n{csv_split_join}</ul>'
+        html_insert_7_blue = f'<ul class="is-style-check_list">{csv_split_join}</ul>'
         return html_insert_7_blue
     except Exception as e: # もし失敗したら
         print(f"7-BLUEの置換生成に失敗しました: {e}")
