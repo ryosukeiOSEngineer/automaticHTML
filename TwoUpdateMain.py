@@ -530,6 +530,7 @@ def html_5_comment_index_generate(html_template, df):
             for index in range(0, 2*half_index_count, 2)
         ]
         
+        
         # すべての新しいセクションを一つの文字列に連結
         html_insert_5_comment_index = '\n\n'.join(new_template_parts_list)
 
