@@ -296,7 +296,7 @@ def html_3_comment_index_generate(html_template, df):
         index_count = len(df)
 
         new_template_parts_list = [
-            f'''<!-- wp:loos/tab-body {{"id":1,"tabId":"6deac381"}} -->\n<div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden={{'"false"' if index == 0 else '"true"'}}><!-- wp:loos/balloon {{"balloonID":"14"}} --><div class="swell-block-balloon"><div class="c-balloon -bln-left" data-col="yellow"><!-- 3-ICON-START-{index} --><div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png" alt="" class="c-balloon__iconImg" width="80px" height="80px"><!-- 3-ICON-END-{index} --></div><div class="c-balloon__body -speaking -border-none"><div class="c-balloon__text"><!-- 3-COMMENT-START-{index} -->\n<p>体内の活性化</p>\n<!-- /wp:loos/balloon --><!-- 3-COMMENT-END-{index} --><span class="c-balloon__shapes"><span class="c-balloon__before"></span><span class="c-balloon__after"></span></span></div></div></div></div><!-- 3-PTAG-START-{index} --><p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-PTAG-END-{index} -->\n<!-- /wp:loos/tab-body -->'''
+        f'''<!-- wp:loos/tab-body {{{f'"id":{index},' if index != 0 else ""}"tabId":"6deac381"}} -->\n<div id="tab-6deac381-{index}" class="c-tabBody__item" aria-hidden={'"false"' if index == 0 else '"true"'}><!-- 3-ICON-START-{index} --><!-- wp:loos/balloon {{"balloonID":"14"}} --><!-- 3-ICON-END-{index} -->\n<!-- 3-COMMENT-START-{index} --><p>体内の活性化</p><!-- 3-COMMENT-END-{index} -->\n<!-- /wp:loos/balloon --><!-- 3-PTAG-START-{index} --><p>水素水とは、体のサビを取り除き、体内を活性化させてくれるお水で、健康や美容に効果絶大なものになります。</p><!-- 3-PTAG-END-{index} -->\n<!-- /wp:loos/tab-body -->'''
             for index in range(index_count)
         ]
         
@@ -346,14 +346,14 @@ def define_3_icon_index(df,index):
 
     if gender == '男性':
         if age_40_or_above:
-            image_file = 'https://iminain.com/wp-content/uploads/2023/06/men-2-150x150.png'
+            image_file = '<!-- wp:loos/balloon {"balloonID":"13"} -->'
         else:
-            image_file = 'https://iminain.com/wp-content/uploads/2023/06/men-1-150x150.png'
+            image_file = '<!-- wp:loos/balloon {"balloonID":"8"} -->'
     else:
         if age_40_or_above:
-            image_file = 'https://iminain.com/wp-content/uploads/2023/06/icon-6-150x150.png'
+            image_file = '<!-- wp:loos/balloon {"balloonID":"12"} -->'
         else:
-            image_file = 'https://iminain.com/wp-content/uploads/2023/06/icon-5-150x150.png'
+            image_file = '<!-- wp:loos/balloon {"balloonID":"14"} -->'
 
     return image_file
 
@@ -367,13 +367,7 @@ def replace_3_icon_index(html_template, df):
         # アイコンのファイル名を取得
         image_file = define_3_icon_index(df, index)
 
-        replace_3_comment_index = f'<div class="c-balloon__icon -circle"><img decoding="async" loading="lazy" src="{image_file}" alt="" class="c-balloon__iconImg" width="80px" height="80px">'
-
-        # placeholder = fr'<!-- 3-ICON-START-{index} -->(.*?)<!-- 3-ICON-END-{index} -->'
-        # if re.search(placeholder, html_template):
-        #     print(f"Placeholder found for index {index}")
-        # else:
-        #     print(f"Placeholder not found for index {index}")
+        replace_3_comment_index = f'{image_file}'
 
         html_template = re.sub(fr'<!-- 3-ICON-START-{index} -->(.*?)<!-- 3-ICON-END-{index} -->', replace_3_comment_index, html_template, flags=re.DOTALL)
         
@@ -526,11 +520,11 @@ def html_5_comment_index_generate(html_template, df):
         half_index_count = len(df) // 2
 
         new_template_parts_list = [
-        f'''<!-- 5-TEMPLATE-{index}-START --><!-- wp:columns -->\n<div class="wp-block-columns"><!-- wp:column -->\n<div class="wp-block-column"><!-- wp:group {{"className":"is-style-bg_grid","layout":{{"type":"default"}}}} -->\n<div class="wp-block-group is-style-bg_grid"><!-- wp:columns {{"isStackedOnMobile":false}} -->\n<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {{"width":"33.33%"}} -->\n<div class="wp-block-column" style="flex-basis:33.33%">!-- wp:image {{"id":13148,"width":"90px","height":"300px","sizeSlug":"full","linkDestination":"none"}} -->\n<figure class="wp-block-image size-full is-resized"><!-- 5-{index}-ICON-START --><img src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148" style="width:90px;height:300px"/><!-- 5-{index}-ICON-END --></figure>\n<!-- /wp:image --></div>\n<!-- /wp:column -->\n\n<!-- wp:column {{"width":"66.66%"}} -->\n<div class="wp-block-column" style="flex-basis:66.66%">\n<!-- wp:paragraph -->\n<p>期間：<!-- 5-{index}-PERIOD-START -->1ヵ月未満<!-- 5-{index}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p>\n<!-- /wp:paragraph -->\n<!-- wp:paragraph {{"align":"right"}} -->\n<p class="has-text-align-right">\n<!-- 5-{index}-AGE-START -->40代<!-- 5-{index}-AGE-END -->・<!-- 5-{index}-GENDER-START -->女性<!-- 5-{index}-GENDER-END --></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->\n\n<!-- wp:paragraph --><!-- 5-COMMENT1 -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index}-COMMENT1-START -->肌がツヤツヤになりました。<!-- 5-{index}-COMMENT1-END --></mark></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph --><!-- 5-COMMENT2 -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index}-COMMENT2-START -->便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。<!-- 5-{index}-COMMENT2-END --></mark></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:group --></div>\n<!-- /wp:column -->\n\n<!-- wp:column -->\n<div class="wp-block-column"><!-- wp:group {{"className":"is-style-bg_grid","layout":{{"type":"default"}}}} -->\n<div class="wp-block-group is-style-bg_grid"><!-- wp:columns {{"isStackedOnMobile":false}} -->\n<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {{"width":"33.33%"}} -->\n<div class="wp-block-column" style="flex-basis:33.33%"><!-- wp:image {{"id":13148,"width":"90px","height":"300px","sizeSlug":"full","linkDestination":"none"}} -->\n<figure class="wp-block-image size-full is-resized"><!-- 5-{index+1}-ICON-START --><img src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148" style="width:90px;height:300px"/><!-- 5-{index+1}-ICON-END --></figure>\n<!-- /wp:image --></div>\n<!-- /wp:column -->\n\n<!-- wp:column {{"width":"66.66%"}} -->\n<div class="wp-block-column" style="flex-basis:66.66%"><!-- wp:paragraph -->\n<p>期間：<!-- 5-{index+1}-PERIOD-START -->3年以上<!-- 5-{index+1}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index+1}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph {{"align":"right"}} -->\n<p class="has-text-align-right">\n<!-- 5-{index+1}-AGE-START -->30代<!-- 5-{index+1}-AGE-END -->・<!-- 5-{index+1}-GENDER-START -->女性<!-- 5-{index+1}-GENDER-END --></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->\n\n<!-- wp:paragraph -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index+1}-COMMENT1-START -->今までは普通の安いミネラルウォーターを飲んでいましたが、水素水に変えてから便通がよくなりました。<!-- 5-{index+1}-COMMENT1-END --></mark></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index+1}-COMMENT2-START -->個人的には、腸活に役立っている気がします。また、便通が良くなったことで肌トラブルも少なくなった気がします。子どもも嫌がらずに水素水を飲んでくれるので、食育としても助かっている商品です。<!-- 5-{index+1}-COMMENT2-END --></mark></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:group --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->'''
+        f'''<!-- 5-TEMPLATE-{index}-START --><!-- wp:columns -->\n<div class="wp-block-columns"><!-- wp:column -->\n<div class="wp-block-column"><!-- wp:group {{"className":"is-style-bg_grid","layout":{{"type":"default"}}}} -->\n<div class="wp-block-group is-style-bg_grid"><!-- wp:columns {{"isStackedOnMobile":false}} -->\n<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {{"width":"33.33%"}} -->\n<div class="wp-block-column" style="flex-basis:33.33%"><!-- 5-{index}-ICON-START --><div class="wp-block-column" style="flex-basis:33.33%"><!-- wp:image {{"id":13148,"width":90,"height":300,"sizeSlug":"full","linkDestination":"none"}} -->\n<figure class="wp-block-image size-full is-resized"><img src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148" style="width:90px;height:300px"/></figure>\n<!-- /wp:image --></div>\n<!-- /wp:column -->\n\n<!-- wp:column {{"width":"66.66%"}} -->\n<div class="wp-block-column" style="flex-basis:66.66%"><!-- wp:paragraph -->\n<p>期間：<!-- 5-{index}-PERIOD-START -->1ヵ月未満<!-- 5-{index}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph {{"align":"right"}} -->\n<p class="has-text-align-right"><!-- 5-{index}-AGE-START -->40代<!-- 5-{index}-AGE-END -->・<!-- 5-{index}-GENDER-START -->女性<!-- 5-{index}-GENDER-END --></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->\n\n<!-- wp:paragraph --><!-- 5-COMMENT1 -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index}-COMMENT1-START -->肌がツヤツヤになりました。<!-- 5-{index}-COMMENT1-END --></mark></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph --><!-- 5-COMMENT2 -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index}-COMMENT2-START -->便秘に悩まされていたので、どうしたらいいのか、色々調べていくうちに水素水に辿り着きました。飲んで1週間くらいは何もかわらなかったのですが、2週間目から、腸の調子がよくなり、便秘がなおりました。それと同時に肌荒れも改善されました。今はツヤツヤお肌をキープしてます。<!-- 5-{index}-COMMENT2-END --></mark></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:group --></div>\n<!-- /wp:column -->\n\n<!-- wp:column -->\n<div class="wp-block-column"><!-- wp:group {{"className":"is-style-bg_grid"}} -->\n<div class="wp-block-group is-style-bg_grid"><!-- wp:columns {{"isStackedOnMobile":false}} -->\n<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {{"width":"33.33%"}} -->\n<div class="wp-block-column" style="flex-basis:33.33%"><!-- 5-{index+1}-ICON-START --><!-- wp:image {{"id":13148,"width":90,"height":300,"sizeSlug":"full","linkDestination":"none"}} -->\n<figure class="wp-block-image size-full is-resized"><!-- wp:image {{"id":13148,"width":90,"height":300,"sizeSlug":"full","linkDestination":"none"}} -->\n<figure class="wp-block-image size-full is-resized"><img src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148" style="width:90px;height:300px"/><!-- 5-{index+1}-ICON-END --></figure>\n<!-- /wp:image --></div>\n<!-- /wp:column -->\n\n<!-- wp:column {{"width":"66.66%"}} -->\n<div class="wp-block-column" style="flex-basis:66.66%"><!-- wp:paragraph -->\n<p>期間：<!-- 5-{index+1}-PERIOD-START -->3年以上<!-- 5-{index+1}-PERIOD-END --><br>満足度：<span class="swl-format-1"><!-- 5-{index+1}-SATISFACTION-START -->満足（意味があった）<!-- 5-{index}-SATISFACTION-END --></span></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph {{"align":"right"}} -->\n<p class="has-text-align-right"><!-- 5-{index+1}-AGE-START -->30代<!-- 5-{index+1}-AGE-END -->・<!-- 5-{index+1}-GENDER-START -->女性<!-- 5-{index+1}-GENDER-END --></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->\n\n<!-- wp:paragraph -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index+1}-COMMENT1-START -->今までは普通の安いミネラルウォーターを飲んでいましたが、水素水に変えてから便通がよくなりました。<!-- 5-{index+1}-COMMENT1-END --></mark></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p><mark style="background-color:rgba(0, 0, 0, 0);color:#6d3a00" class="has-inline-color"><!-- 5-{index+1}-COMMENT2-START -->個人的には、腸活に役立っている気がします。また、便通が良くなったことで肌トラブルも少なくなった気がします。子どもも嫌がらずに水素水を飲んでくれるので、食育としても助かっている商品です。<!-- 5-{index+1}-COMMENT2-END --></mark></p>\n<!-- /wp:paragraph --></div>\n<!-- /wp:group --></div>\n<!-- /wp:column --></div>\n<!-- /wp:columns -->'''
             for index in range(0, 2*half_index_count, 2)
         ]
         
-        
+
         # すべての新しいセクションを一つの文字列に連結
         html_insert_5_comment_index = '\n\n'.join(new_template_parts_list)
 
@@ -570,9 +564,9 @@ def define_5_icon_index(df,index):
     gender = gender_mapping.get(str(gender_value), '不明') # 数値が1または2でない場合は'不明'とする
 
     if gender == '男性':
-        image_file = 'https://iminain.com/wp-content/uploads/2023/06/men-touka-2.png'
+        image_file = '<!-- wp:image {"id":13147,"width":90,"height":250,"sizeSlug":"full","linkDestination":"none"} -->\n<figure class="wp-block-image size-full is-resized"><img src="https://iminain.com/wp-content/uploads/2023/06/men-touka-2.png" alt="" class="wp-image-13147" style="width:90px;height:250px"/>'
     else:
-        image_file = 'https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png'
+        image_file = '<!-- wp:image {{"id":13148,"width":90,"height":300,"sizeSlug":"full","linkDestination":"none"}} -->\n<figure class="wp-block-image size-full is-resized"><img src="https://iminain.com/wp-content/uploads/2023/06/women-touka-2.png" alt="" class="wp-image-13148" style="width:90px;height:300px"/>'
 
     return image_file
 
@@ -586,13 +580,7 @@ def replace_5_icon_index(html_template, df):
         # アイコンのファイル名を取得
         image_file = define_5_icon_index(df, index)
 
-        replace_5_comment_index = f'<img decoding="async" loading="lazy"\nsrc="{image_file}" alt=""\nclass="wp-image-13148 luminous" style="width:90px;height:300px" width="90" height="300"\ndata-luminous="{image_file}">'
-
-        # placeholder = fr'<!-- 5-{index}-ICON-START -->(.*?)<!-- 5-{index}-ICON-END -->'
-        # if re.search(placeholder, html_template):
-        #     print(f"Placeholder found for index {index}")
-        # else:
-        #     print(f"Placeholder not found for index {index}")
+        replace_5_comment_index = f'{image_file}'
 
         html_template = re.sub(fr'<!-- 5-{index}-ICON-START -->(.*?)<!-- 5-{index}-ICON-END -->', replace_5_comment_index, html_template, flags=re.DOTALL)
         # 置換が成功したかどうかを確認
