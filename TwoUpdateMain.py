@@ -16,7 +16,7 @@ def run_file_change():
 #     return str(uuid.uuid4())
 
 # 元々のHTMLの名称変更しやすいように変数化
-HTML_TEMPLATE_FORMAT = 'automatic3.html'
+HTML_TEMPLATE_FORMAT = 'automatic.html'
 
 
 # 特定のワードの置換
