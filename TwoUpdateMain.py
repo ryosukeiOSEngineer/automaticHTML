@@ -4,16 +4,12 @@ os.environ['TK_SILENCE_DEPRECATION'] = '1'
 import tkinter as tk
 from tkinter import filedialog, ttk
 import pandas as pd
-# import uuid
 import subprocess
 
 def run_file_change():
     subprocess.run(["python", "file_change.py"])
 
 
-# 仮のIDを発行するため
-# def generate_uuid():
-#     return str(uuid.uuid4())
 
 # 元々のHTMLの名称変更しやすいように変数化
 HTML_TEMPLATE_FORMAT = 'automatic.html'
