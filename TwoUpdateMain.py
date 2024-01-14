@@ -41,7 +41,6 @@ def browse_file():
 
     # 現在のスクリプトの場所を取得
     current_directory = os.path.dirname(os.path.abspath(__file__))
-
     # このパスを初期ディレクトリとして指定
     file_path = filedialog.askopenfilename(initialdir=current_directory, filetypes=[("CSV Files", "*.csv")])
 
